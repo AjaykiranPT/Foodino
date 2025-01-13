@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { creatingRecipe, deleteRecipe } = require('../controllers/RecipeController');
+const {getRecipes,createRecipe,deleteRecipe,getRecipeById} = require('../controllers/RecipeController');
 
-router.post('/', creatingRecipe);
+const {verifyToken} = require('../middlewares/authMiddleware');
 
+router.get('/', getRecipes);
+router.post('/', createRecipe);
 router.delete('/:id', deleteRecipe);
+router.get("/:id", getRecipeById);
 
 module.exports = router;
