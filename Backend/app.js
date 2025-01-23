@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 require('dotenv').config();
 
+
 const userRouter = require('./routes/authRoutes');
 const recipeRouter = require('./routes/RecipeRoutes');
 const uploadRouter = require('./routes/uploadRoutes');
-const {verifyToken} = require('./middlewares/authMiddleware');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -48,7 +48,7 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", userRouter);
 app.use("/recipes", recipeRouter);
-app.use("/upload", verifyToken, uploadRouter);
+app.use("/upload", uploadRouter);
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {

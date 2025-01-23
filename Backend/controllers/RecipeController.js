@@ -1,96 +1,104 @@
-const Recipe = require("../models/Recipe.js");
+const Recipe = require('../models/Recipe'); 
+const fs = require('fs');
 
-const getRecipes = async (req, res) => {
+// Create a new recipe
+const createRecipe = async (req, res) => {
+  try {
+    const { title, description, category, prepTime, ingredients, steps, createdBy } = req.body;
+
+    // Basic validation
+    if (!title || !description || !category || !prepTime || !ingredients || !steps || !createdBy) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    // Handle image upload
+    const imageUrl = req.file?.path || null;
+    const recipe = new Recipe({
+      title,
+      description,
+      category,
+      prepTime,
+      ingredients: JSON.parse(ingredients),
+      steps: JSON.parse(steps),
+      createdBy,
+      image: imageUrl,
+    });
+
+    await recipe.save();
+    res.status(201).json({ message: 'Recipe created successfully!', recipe });
+  } catch (error) {
+    console.error('Error creating recipe:', error);
+    res.status(500).json({ message: 'Failed to create recipe.', error: error.message });
+  }
+};
+
+// Get all recipes
+const getAllRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find();
     res.status(200).json(recipes);
   } catch (error) {
-    console.error("Error fetching recipes:", error);
-    res.status(500).json({ message: "Error fetching recipes", error: error.message });
+    console.error('Error retrieving recipes:', error);
+    res.status(500).json({ message: 'Failed to retrieve recipes.', error: error.message });
   }
 };
 
+// Get a recipe by ID
 const getRecipeById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-
-    // Validate ID format
-    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: "Invalid recipe ID format" });
-    }
-
     const recipe = await Recipe.findById(id);
     if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+      return res.status(404).json({ message: 'Recipe not found.' });
     }
-
     res.status(200).json(recipe);
   } catch (error) {
-    console.error("Error fetching recipe:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error('Error retrieving recipe:', error);
+    res.status(500).json({ message: 'Failed to retrieve recipe.', error: error.message });
   }
 };
 
-const createRecipe = async (req, res) => {
+// Update a recipe
+const updateRecipe = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { title, ingredients, instructions, category, prepTime, createdBy } = req.body;
-    const image = req.file ? req.file.path : null; // Get image URL from multer
-
-    // Validate required fields
-    if (!title || !ingredients || !instructions || !createdBy) {
-      return res.status(400).json({ message: "Title, ingredients, instructions, and createdBy are required" });
+    const updatedData = req.body;
+    if (req.file) {
+      updatedData.image = req.file.path; // Update the image URL if a new image is uploaded
     }
-
-    // Validate data types
-    if (
-      typeof title !== "string" ||
-      !Array.isArray(ingredients) ||
-      !Array.isArray(instructions) ||
-      typeof createdBy !== "string" ||
-      (prepTime && typeof prepTime !== "number")
-    ) {
-      return res.status(400).json({ message: "Invalid data types provided" });
+    const updatedRecipe = await Recipe.findByIdAndUpdate(id, updatedData, { new: true });
+    if (!updatedRecipe) {
+      return res.status(404).json({ message: 'Recipe not found.' });
     }
-
-    // Create new recipe
-    const newRecipe = new Recipe({
-      title,
-      ingredients,
-      instructions,
-      category,
-      image,
-      prepTime,
-      createdBy,
-    });
-
-    await newRecipe.save();
-
-    res.status(201).json({ message: "Recipe added successfully", recipe: newRecipe });
+    res.status(200).json({ message: 'Recipe updated successfully!', recipe: updatedRecipe });
   } catch (error) {
-    console.error("Error creating recipe:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error('Error updating recipe:', error);
+    res.status(500).json({ message: 'Failed to update recipe.', error: error.message });
   }
 };
 
+// Delete a recipe
 const deleteRecipe = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-
-    // Validate ID format
-    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: "Invalid recipe ID format" });
-    }
-
     const deletedRecipe = await Recipe.findByIdAndDelete(id);
     if (!deletedRecipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+      return res.status(404).json({ message: 'Recipe not found.' });
     }
-
-    res.status(200).json({ message: "Recipe deleted successfully", recipe: deletedRecipe });
+    res.status(200).json({ message: 'Recipe deleted successfully!' });
   } catch (error) {
-    console.error("Error deleting recipe:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error('Error deleting recipe:', error);
+    res.status(500).json({ message: 'Failed to delete recipe.', error: error.message });
   }
 };
 
-module.exports = { getRecipes, getRecipeById, createRecipe, deleteRecipe };
+module.exports = {
+  createRecipe,
+  getAllRecipes,
+  getRecipeById,
+  updateRecipe,
+  deleteRecipe,
+};

@@ -1,12 +1,20 @@
-const express = require("express");
+const express = require('express');
+const { upload } = require('../controllers/uploadController'); // Use the Cloudinary-based middleware
+const {
+  createRecipe,
+  getAllRecipes,
+  getRecipeById,
+  updateRecipe,
+  deleteRecipe,
+} = require('../controllers/RecipeController'); // Adjust the path and destructure functions
+
 const router = express.Router();
-const {getRecipes,createRecipe,deleteRecipe,getRecipeById} = require('../controllers/RecipeController');
 
-const {verifyToken} = require('../middlewares/authMiddleware');
-
-router.get('/', getRecipes);
-router.post('/', createRecipe);
-router.delete('/:id', deleteRecipe);
-router.get("/:id", getRecipeById);
+// Recipe routes
+router.post('/add', upload.single('image'), createRecipe); // Use the standalone function directly
+router.get('/', getAllRecipes); // Use the standalone function directly
+router.get('/:id', getRecipeById); // Use the standalone function directly
+router.put('/:id', upload.single('image'), updateRecipe); // Use the standalone function directly
+router.delete('/:id', deleteRecipe); // Use the standalone function directly
 
 module.exports = router;

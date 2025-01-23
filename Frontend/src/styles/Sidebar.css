@@ -1,0 +1,63 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.layout-content {
+  display: flex;
+  flex: 1;
+}
+
+.sidebardiv {
+  width: 250px;
+  background: #5c4033 ; 
+  color: white; 
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+.sidebardiv a {
+  color: white; /* White text for links */
+  text-decoration: none; /* Removes underline from links */
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 5px; /* Rounded corners for link items */
+  margin-bottom: 10px;
+  transition: background 0.3s ease; /* Smooth hover effect */
+}
+
+.sidebardiv a:hover {
+  background:#ff6f3c; /* Slightly darker shade for hover */
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background: #f9f9f9; /* Light gray background for content */
+}
+
+header {
+  height: 60px;
+  background: #007bff; /* Blue header */
+  color: white; /* White text for header */
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for separation */
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: auto; /* Push link to the right */
+}

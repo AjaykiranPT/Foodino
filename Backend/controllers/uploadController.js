@@ -1,20 +1,12 @@
-
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require('../config/cloudinary');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
-
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Set up multer storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'your-folder-name', // Optional: specify folder in Cloudinary
+    folder: 'recipes', // Optional: specify folder in Cloudinary
     allowedFormats: ['jpg', 'png', 'jpeg'], // Optional: specify allowed formats
   },
 });

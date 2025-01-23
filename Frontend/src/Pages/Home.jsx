@@ -1,154 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
-import axios from 'axios';
-import { Button, Alert } from '@mui/material';
+import React from 'react';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import '../styles/home.css';
 
-const Home = ({ token }) => {
-  const [recipes, setRecipes] = useState([]);
-  const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const [filterCategory, setFilterCategory] = useState('');
-  const [sortOption, setSortOption] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/recipes/');
-        setRecipes(response.data);
-        setFilteredRecipes(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching recipes:', error);
-        setError('Failed to load recipes. Please try again later.');
-        setLoading(false);
-      }
-    };
-
-    fetchRecipes();
-  }, []);
-
-  const handleFilter = (category) => {
-    setFilterCategory(category);
-    const filtered = category
-      ? recipes.filter((recipe) => recipe.category === category)
-      : recipes;
-    setFilteredRecipes(filtered);
-  };
-
-  const handleSort = (option) => {
-    setSortOption(option);
-    const sorted = [...filteredRecipes].sort((a, b) => {
-      if (option === 'rating') return b.rating - a.rating;
-      if (option === 'prepTime') return a.prepTime - b.prepTime;
-      return 0;
-    });
-    setFilteredRecipes(sorted);
-  };
-
+const Home = () => {
   return (
-    <>
-      <Header />
-      <div className="container mt-4">
-        <h1 className="text-center mb-4">Recipes</h1>
-
-        <div className="mb-4 text-center">
-          <div className="d-flex justify-content-between mb-4">
-            <div>
-              <label className="me-2">Filter by Category:</label>
-              <select
-                className="form-select"
-                value={filterCategory}
-                onChange={(e) => handleFilter(e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="Vegetarian">Vegetarian</option>
-                <option value="Non-Vegetarian">Non-Vegetarian</option>
-                <option value="Desserts">Desserts</option>
-              </select>
-            </div>
-            <div>
-              <label className="me-2">Sort by:</label>
-              <select
-                className="form-select"
-                value={sortOption}
-                onChange={(e) => handleSort(e.target.value)}
-              >
-                <option value="">None</option>
-                <option value="rating">Rating</option>
-                <option value="prepTime">Preparation Time</option>
-              </select>
-            </div>
-          </div>
+    <div className="homepage-container" style={{ backgroundColor: '#f5f5f5' }}>
+      {/* Welcome Section */}
+      <div className="welcome-section">
+        <div className="sloped-background" />
+        <div className="welcome-content">
+          <h2>Welcome to Foodino!</h2>
+          <p>Your go-to platform for sharing and discovering amazing recipes.</p>
+          <a href="/explore" className="animated-button">
+            Explore Now
+          </a>
         </div>
+      </div>
 
-        {loading ? (
-          <p>Loading recipes...</p>
-        ) : error ? (
-          <Alert severity="error">{error}</Alert>
-        ) : filteredRecipes.length === 0 ? (
-          <p>No recipes available for the selected category.</p>
-        ) : (
-          <div className="row">
-  {filteredRecipes.map((recipe) => (
-    <div
-      className="col-md-4 mb-4"
-      key={recipe._id}
-      onClick={() => navigate(`/recipe/${recipe._id}`)} 
-      style={{ cursor: 'pointer' }}
-    >
-                <div className="card h-100">
-                  <img
-                    src={recipe.image}
-                    alt={recipe.title}
-                    className="card-img-top"
-                    style={{ height: '200px', objectFit: 'cover' }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{recipe.title}</h5>
-                    <p className="card-text">{recipe.description}</p>
-                    <p className="card-text">
-                      <strong>Category:</strong> {recipe.category}
-                    </p>
-                    <p className="card-text">
-                      <strong>Rating:</strong> {recipe.rating || 'Not Rated'}
-                    </p>
-                    <p className="card-text">
-                      <strong>Preparation Time:</strong> {recipe.prepTime} minutes
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Features Section */}
+      <div className="features-section">
+        {[
+          {
+            icon: <CheckCircleIcon className="feature-icon" />,
+            title: 'Discover Recipes',
+            description: 'Find thousands of recipes from around the world.',
+          },
+          {
+            icon: <StarBorderIcon className="feature-icon" />,
+            title: 'Get Rated',
+            description: 'Receive feedback from professional Master Chefs.',
+          },
+          {
+            icon: <CheckCircleIcon className="feature-icon" />,
+            title: 'Share Creations',
+            description: 'Upload your culinary creations to inspire others.',
+          },
+          {
+            icon: <CheckCircleIcon className="feature-icon" />,
+            title: 'Tutorial Videos',
+            description: 'Watch detailed cooking tutorials by experts.',
+          },
+        ].map(({ icon, title, description }, index) => (
+          <div className="feature-card fade-in-section" key={index}>
+            {icon}
+            <h6>{title}</h6>
+            <p className="feature-description">{description}</p>
           </div>
-        )}
+        ))}
       </div>
-
-      
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          zIndex: 1000,
-        }}
-      >
-        {!token ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate('/addrecipe')}
-          >
-            Add Recipe
-          </Button>
-        ) : (
-          <Alert severity="info">Please log in to add your recipes.</Alert>
-        )}
-      </div>
-    </>
+    </div>
   );
 };
 

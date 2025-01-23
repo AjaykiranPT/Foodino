@@ -3,11 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom'; 
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { TextField, Button, Typography, Box, Container, Avatar, IconButton } from '@mui/material';
-import LoginIcon from '@mui/icons-material/Login';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { FaArrowLeft, FaSignInAlt } from 'react-icons/fa';
+import '../styles/Login.css'
 
-const Login = ({ setToken }) => {
+const Login = () => {
   const navigate = useNavigate();
   const {
     register,
@@ -17,114 +18,93 @@ const Login = ({ setToken }) => {
 
   const onSubmit = async (data) => {
     try {
-      console.log("Form Submitted:", data);
       const response = await axios.post('http://localhost:3000/auth/login', data, {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const token = response.data.token;
-      console.log(token)
-      alert('Login successful!');
-      setToken(token);
-      navigate('/');
+      const { userid, userrole } = response.data;
 
+      if (userid && userrole) {
+        localStorage.setItem('userId', userid);
+        localStorage.setItem('userRole', userrole);
+
+        toast.success('Login successful!', {
+          autoClose: 2000,
+        });
+
+        setTimeout(() => navigate('/'), 2000);
+      } else {
+        throw new Error('Invalid response from the server');
+      }
     } catch (error) {
       console.error('Login error:', error);
       if (error.response) {
-        alert(`Error: ${error.response.data.message || 'Login failed'}`);
+        toast.error(`Error: ${error.response.data.message || 'Login failed'}`, {
+          autoClose: 2000,
+        });
       } else {
-        alert('Error: Unable to connect to the server.');
+        toast.error('Error: Unable to connect to the server.', {
+          autoClose: 2000,
+        });
       }
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: 'white',
-          width: '100%',
-          maxWidth: 400,
-        }}
-      >
-        <Box display="flex" justifyContent="flex-start" mb={2}>
-          <IconButton color="primary" onClick={() => navigate(-1)}>
-            <ArrowBackIcon />
-          </IconButton>
-        </Box>
+    <div className="container d-flex justify-content-center align-items-center" style={{ height: '100vh', backgroundColor: '#F5F5F5' }}>
+      <div className="p-4 shadow border rounded" style={{ width: '100%', maxWidth: '400px', backgroundColor: '#FFFFFF' }}>
+        <div className="d-flex justify-content-start mb-2">
+          <button className="btn btn-link" onClick={() => navigate(-1)}>
+            <FaArrowLeft />
+          </button>
+        </div>
 
-        
-        <Box display="flex" justifyContent="center" mb={3}>
-          <Avatar
-            sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}
-          >
-            <LoginIcon fontSize="large" />
-          </Avatar>
-        </Box>
+        <div className="d-flex justify-content-center mb-3">
+          <div className="bg-success text-white rounded-circle d-flex justify-content-center align-items-center" style={{ width: '56px', height: '56px' }}>
+            <FaSignInAlt style={{ fontSize: '24px' }} />
+          </div>
+        </div>
 
-        <Typography
-          variant="h4"
-          textAlign="center"
-          mb={4}
-          fontWeight="bold"
-        >
-          LOGIN
-        </Typography>
+        <h4 className="text-center mb-4 font-weight-bold" style={{ color: '#333' }}>LOGIN</h4>
 
-        <TextField
-          id="email"
-          label="Email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          {...register('email', { required: "Please enter your email" })}
-          error={!!errors.email}
-          helperText={errors.email?.message}
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-3">
+            <input
+              type="email"
+              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+              id="email"
+              placeholder="Email"
+              {...register('email', { required: "Please enter your email" })}
+            />
+            <div className="invalid-feedback">{errors.email?.message}</div>
+          </div>
 
-        <TextField
-          id="password"
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          {...register('password', { required: "Please enter your password" })}
-          error={!!errors.password}
-          helperText={errors.password?.message}
-        />
+          <div className="mb-3">
+            <input
+              type="password"
+              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+              id="password"
+              placeholder="Password"
+              {...register('password', { required: "Please enter your password" })}
+            />
+            <div className="invalid-feedback">{errors.password?.message}</div>
+          </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 3, mb: 2 }}
-        >
-          LOGIN
-        </Button>
+          <button type="submit" className="btn btn-success w-100 mt-3 mb-2">
+            LOGIN
+          </button>
 
-        <Typography textAlign="center" variant="body2" color="textSecondary">
-          Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
-            Register here
-          </Link>
-        </Typography>
-      </Box>
-    </Container>
+          <p className="text-center">
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: '#FF9800', textDecoration: 'none', fontWeight: 'bold' }}>
+              Register here
+            </Link>
+          </p>
+        </form>
+      </div>
+
+      <ToastContainer />
+    </div>
   );
 };
 

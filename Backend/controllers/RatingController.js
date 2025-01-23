@@ -1,19 +1,27 @@
 const Rating = require("../models/Rating"); // Adjust the path as needed
 
+// Helper: Validate MongoDB ObjectId format
+const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
 // Create a new rating
 const createRating = async (req, res) => {
   try {
-    const { Recipe, Rating, specialRating, RatedBy } = req.body;
+    const { Recipe, Rating: ratingValue, specialRating, RatedBy } = req.body;
 
     // Validate required fields
     if (!Recipe || !RatedBy) {
       return res.status(400).json({ message: "Recipe and RatedBy are required" });
     }
 
+    // Validate rating value
+    if (ratingValue < 0 || ratingValue > 5) {
+      return res.status(400).json({ message: "Rating must be between 0 and 5" });
+    }
+
     // Create a new rating
     const newRating = new Rating({
       Recipe,
-      Rating,
+      Rating: ratingValue,
       specialRating,
       RatedBy,
     });
@@ -32,11 +40,16 @@ const getRatingsForRecipe = async (req, res) => {
     const { recipeId } = req.params;
 
     // Validate recipeId format
-    if (!recipeId || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!isValidObjectId(recipeId)) {
       return res.status(400).json({ message: "Invalid recipe ID format" });
     }
 
     const ratings = await Rating.find({ Recipe: recipeId }).populate("RatedBy", "name email"); // Populate with user info
+
+    if (ratings.length === 0) {
+      return res.status(404).json({ message: "No ratings found for this recipe" });
+    }
+
     res.status(200).json(ratings);
   } catch (error) {
     console.error("Error fetching ratings:", error);
@@ -50,7 +63,7 @@ const deleteRating = async (req, res) => {
     const { id } = req.params;
 
     // Validate ID format
-    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!isValidObjectId(id)) {
       return res.status(400).json({ message: "Invalid rating ID format" });
     }
 

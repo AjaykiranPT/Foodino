@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, MenuItem, Alert } from '@mui/material';
+import { TextField, Button, MenuItem, Alert, IconButton, Box } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const AddRecipe = ({ token }) => {
+const AddRecipe = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -38,6 +39,16 @@ const AddRecipe = ({ token }) => {
   const addIngredient = () => setIngredients([...ingredients, '']);
   const addStep = () => setSteps([...steps, '']);
 
+  const removeIngredient = (index) => {
+    const updatedIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(updatedIngredients);
+  };
+
+  const removeStep = (index) => {
+    const updatedSteps = steps.filter((_, i) => i !== index);
+    setSteps(updatedSteps);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,6 +58,12 @@ const AddRecipe = ({ token }) => {
     }
 
     try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        setError('User is not authenticated. Please log in again.');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
@@ -55,10 +72,10 @@ const AddRecipe = ({ token }) => {
       formData.append('image', image);
       formData.append('ingredients', JSON.stringify(ingredients));
       formData.append('steps', JSON.stringify(steps));
+      formData.append('createdBy', userId);
 
-      await axios.post('http://localhost:3000/recipes/', formData, {
+      await axios.post('http://localhost:3000/recipes/add', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
@@ -131,16 +148,19 @@ const AddRecipe = ({ token }) => {
         <div className="mb-3">
           <label>Ingredients</label>
           {ingredients.map((ingredient, index) => (
-            <TextField
-              key={index}
-              variant="outlined"
-              size="small"
-              fullWidth
-              placeholder={`Ingredient ${index + 1}`}
-              value={ingredient}
-              onChange={(e) => handleIngredientChange(index, e.target.value)}
-              className="mb-2"
-            />
+            <Box key={index} display="flex" alignItems="center" className="mb-2">
+              <TextField
+                variant="outlined"
+                size="small"
+                fullWidth
+                placeholder={`Ingredient ${index + 1}`}
+                value={ingredient}
+                onChange={(e) => handleIngredientChange(index, e.target.value)}
+              />
+              <IconButton onClick={() => removeIngredient(index)} color="secondary" size="small" aria-label="delete">
+                <DeleteIcon />
+              </IconButton>
+            </Box>
           ))}
           <Button onClick={addIngredient} variant="outlined" className="mt-2">
             + Add Ingredient
@@ -150,16 +170,19 @@ const AddRecipe = ({ token }) => {
         <div className="mb-3">
           <label>Steps</label>
           {steps.map((step, index) => (
-            <TextField
-              key={index}
-              variant="outlined"
-              size="small"
-              fullWidth
-              placeholder={`Step ${index + 1}`}
-              value={step}
-              onChange={(e) => handleStepChange(index, e.target.value)}
-              className="mb-2"
-            />
+            <Box key={index} display="flex" alignItems="center" className="mb-2">
+              <TextField
+                variant="outlined"
+                size="small"
+                fullWidth
+                placeholder={`Step ${index + 1}`}
+                value={step}
+                onChange={(e) => handleStepChange(index, e.target.value)}
+              />
+              <IconButton onClick={() => removeStep(index)} color="secondary" size="small" aria-label="delete">
+                <DeleteIcon />
+              </IconButton>
+            </Box>
           ))}
           <Button onClick={addStep} variant="outlined" className="mt-2">
             + Add Step

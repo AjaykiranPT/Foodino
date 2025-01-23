@@ -1,13 +1,16 @@
 const express = require("express");
-const {createRating,getRatingsForRecipe,deleteRating} = require("../controllers/RatingController");
+const { createRating, getRatingsForRecipe, deleteRating } = require("../controllers/RatingController");
 
 const router = express.Router();
 
-// Routes for ratings
+// Base route for ratings
+// Create a new rating for a recipe
 router.post("/", createRating); 
 
-router.get("/:recipeId", getRatingsForRecipe); 
+// Get all ratings for a specific recipe
+router.get("/recipe/:recipeId", getRatingsForRecipe); 
 
+// Delete a specific rating by ID
 router.delete("/:id", deleteRating);
 
 module.exports = router;
