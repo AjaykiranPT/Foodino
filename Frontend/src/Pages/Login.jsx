@@ -32,7 +32,7 @@ const Login = () => {
           autoClose: 2000,
         });
 
-        setTimeout(() => navigate('/'), 2000);
+        (userrole == 'admin')?(setTimeout(() => navigate('/admin/dashboard'), 2000)):(setTimeout(() => navigate('/explore'), 2000));
       } else {
         throw new Error('Invalid response from the server');
       }

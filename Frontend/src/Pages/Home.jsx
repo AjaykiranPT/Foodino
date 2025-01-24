@@ -2,8 +2,10 @@ import React from 'react';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import '../styles/home.css';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const userRole = localStorage.getItem("userRole")
   return (
     <div className="homepage-container" style={{ backgroundColor: '#f5f5f5' }}>
       {/* Welcome Section */}
@@ -12,9 +14,9 @@ const Home = () => {
         <div className="welcome-content">
           <h2>Welcome to Foodino!</h2>
           <p>Your go-to platform for sharing and discovering amazing recipes.</p>
-          <a href="/explore" className="animated-button">
-            Explore Now
-          </a>
+          {userRole=='admin'?(<Link to={'/admin/dashboard'} className="animated-button"> Go Dashboard </Link>):(<Link to={'/explore'} className="animated-button"> Explore Now </Link>)}
+          
+            
         </div>
       </div>
 

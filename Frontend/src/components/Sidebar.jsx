@@ -34,12 +34,6 @@ const Sidebar = () => {
   // Define the menu items based on user role
   const getMenuItems = (role) => {
     switch (role) {
-      case 'admin':
-        return [
-          { path: '/dashboard', label: 'Dashboard', icon: <FaHome /> },
-          { path: '/manage-users', label: 'Manage Users', icon: <FaUsers /> },
-          { path: '/settings', label: 'Settings', icon: <FaCogs /> },
-        ];
       case 'masterchef':
         return [
           { path: '/dashboard', label: 'Dashboard', icon: <FaHome /> },

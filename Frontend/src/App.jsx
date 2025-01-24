@@ -9,15 +9,25 @@ import Login from './Pages/Login';
 import Register from './Pages/Registration';
 import Recipe from './Pages/Recipe';
 import Addrecipe from './Pages/Addrecipe';
-import Layout from './components/Layout';
 import Setting from './Pages/Setting.jsx';
+import Profile from './Pages/Profile.jsx'
 
+import Layout from './Layouts/Layout.jsx';
+import AdminLayout from './Layouts/AdminLayout.jsx';
+
+import Dashboard from './admin/pages/Dashboard.jsx';
+import ManageUser from './admin/pages/ManageUsers.jsx'
+import ManageRecipe from './admin/pages/ManageRecipes.jsx'
 
 
 const ProtectedRoute = ({ children }) => {
   const userId = localStorage.getItem('userId');
   return userId ? children : <Navigate to="/login" />; 
 };
+const   AdminProtectedRoute  = ({chilren}) =>{
+  const userRole = localStorage.getItem('userRole');
+  return userRole =='admin' ? children : <Navigate to="/login" />; 
+}
 
 const App = () => {
   return (
@@ -26,14 +36,21 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/explore" element={<Explore />} />
           <Route path="/recipe/:id" element={<Recipe />} />
-          <Route path="/profile" element={<Recipe />} />
+          <Route path="/profile" element={<ProtectedRoute> <Profile /> </ProtectedRoute>} />
           <Route path="/addrecipe" element={<ProtectedRoute><Addrecipe /></ProtectedRoute>} />
           <Route path="/setting" element={<ProtectedRoute><Setting /></ProtectedRoute>} />
         </Route>
+        
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/dashboard" element={<Dashboard/>}/>
+          <Route path="/admin/users" element={<ManageUser/>}/>
+          <Route path="/admin/recipes" element={<ManageRecipe/>}/>
+          <Route path="/settings" element={<Dashboard/>}/>
+        </Route>
       </Routes>
     </Router>
   );

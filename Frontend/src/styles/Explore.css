@@ -2,7 +2,9 @@
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
+  display: flex;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100px auto;
 }
 
 h1 {
@@ -14,7 +16,9 @@ h1 {
 
 .main-content {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+  position: relative;
 }
 
 .recipes {
@@ -23,15 +27,20 @@ h1 {
   gap: 20px;
   justify-content: start;
   flex: 0 0 75%;
+  width: 80%;
 }
 
-.sidebar {
+.explore-sidebar {
   flex: 0 0 20%;
   padding: 10px;
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
   margin-left: 20px;
+  right: 30px;
+  width: 20%;
+  position: absolute;
+  
 }
 
 .filter-sort {

@@ -1,0 +1,84 @@
+.admin-sidebar {
+    width: 20%;
+    background-color: #ff7043; /* Foodino theme color */
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px; /* Added more padding for a spacious look */
+    margin-top: 30px;
+    border-radius: 0px 60px 20px 0px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease; /* Smooth transition for background */
+}
+
+
+.sidebar-header h2 {
+    text-align: center;
+    color: white;
+    font-size: 24px; /* Increased font size */
+    margin-bottom: 20px; /* Spacing below header */
+    text-transform: uppercase; /* Uppercase for a modern touch */
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1; /* Allow menu to grow and take available space */
+}
+
+.sidebar-menu li {
+    margin: 15px 0;
+}
+
+.sidebar-menu a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px; /* Increased font size */
+    padding: 10px; /* Added padding for clickable area */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Light transparent background on hover */
+    color: #ffd180; /* Light orange for text on hover */
+}
+
+.add-project-btn {
+    margin-top: auto;
+    padding: 12px; /* Slightly larger padding */
+    background-color: #e64a19; /* Darker shade for button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Increased font size */
+    transition: background-color 0.3s ease, transform 0.2s; /* Added transform for button */
+}
+
+.add-project-btn:hover {
+    background-color: #d84315; /* Darker shade on hover */
+    transform: scale(1.05); /* Slight scaling effect on hover */
+}
+
+.logout-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.logout-btn {
+    background-color: #ff7043; /* Logout button color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s; /* Added transform */
+    font-size: 16px; /* Increased font size */
+}
+
+.logout-btn:hover {
+    background-color: #d35400; /* Darker color on hover */
+    transform: scale(1.05); /* Slight scaling effect on hover */
+}

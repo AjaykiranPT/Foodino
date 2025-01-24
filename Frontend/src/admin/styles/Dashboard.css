@@ -1,0 +1,18 @@
+.admin-dashboard {
+    padding: 20px;
+  }
+  
+  .dashboard-stats {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .stat-card {
+    flex: 1;
+    padding: 20px;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  

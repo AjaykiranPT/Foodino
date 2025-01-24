@@ -10,8 +10,8 @@ const AddRecipe = () => {
   const [category, setCategory] = useState('');
   const [prepTime, setPrepTime] = useState('');
   const [image, setImage] = useState(null);
-  const [ingredients, setIngredients] = useState(['']);
-  const [steps, setSteps] = useState(['']);
+  const [ingredients, setIngredients] = useState([]); // Initialize as empty array
+  const [steps, setSteps] = useState([]); // Initialize as empty array
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -52,7 +52,7 @@ const AddRecipe = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !description || !category || !prepTime || !image || ingredients.some(i => !i) || steps.some(s => !s)) {
+    if (!title || !description || !category || !prepTime || !image || ingredients.length === 0 || steps.length === 0 || ingredients.some(i => !i) || steps.some(s => !s)) {
       setError('All fields are required!');
       return;
     }
@@ -162,7 +162,7 @@ const AddRecipe = () => {
               </IconButton>
             </Box>
           ))}
-          <Button onClick={addIngredient} variant="outlined" className="mt-2">
+          <Button type="button" onClick={addIngredient} variant="outlined" className="mt-2">
             + Add Ingredient
           </Button>
         </div>
@@ -184,7 +184,7 @@ const AddRecipe = () => {
               </IconButton>
             </Box>
           ))}
-          <Button onClick={addStep} variant="outlined" className="mt-2">
+          <Button type="button" onClick={addStep} variant="outlined" className="mt-2">
             + Add Step
           </Button>
         </div>
