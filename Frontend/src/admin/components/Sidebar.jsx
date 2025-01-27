@@ -1,32 +1,73 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for programmatic navigation
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Button, List, ListItem, ListItemText, Divider, Typography } from "@mui/material";
 import "../styles/Sidebar.css";
 
 const Sidebar = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   const handleLogout = () => {
-    // Perform logout logic
-    localStorage.clear(); // Clear user-related data from local storage
+    localStorage.clear();
     alert("You have been logged out!");
-    navigate("/"); // Redirect to homepage
+    navigate("/");
   };
+
+  // Helper function to check if a link is active
+  const isActive = (path) => location.pathname === path;
 
   return (
     <div className="admin-sidebar">
       <div className="sidebar-header">
-        <h2>Admin</h2>
+        <Typography variant="h4" component="h2" className="sidebar-title">
+          Admin
+        </Typography>
       </div>
-      <ul className="sidebar-menu">
-        <li><a href="/admin/dashboard">Dashboard</a></li>
-        <li><a href="/admin/recipes">Manage Recipes</a></li>
-        <li><a href="/admin/users">Manage Users</a></li>
-      </ul>
-      {/* Logout Section */}
+      <Divider style={{ backgroundColor: "white", margin: "20px 0" }} />
+      <List className="sidebar-menu">
+        <ListItem
+          button
+          component={Link}
+          to="/admin/dashboard"
+          className={isActive("/admin/dashboard") ? "active-link" : ""}
+        >
+          <ListItemText primary="Dashboard" />
+        </ListItem>
+        <ListItem
+          button
+          component={Link}
+          to="/admin/recipes"
+          className={isActive("/admin/recipes") ? "active-link" : ""}
+        >
+          <ListItemText primary="Manage Recipes" />
+        </ListItem>
+        <ListItem
+          button
+          component={Link}
+          to="/admin/users"
+          className={isActive("/admin/users") ? "active-link" : ""}
+        >
+          <ListItemText primary="Manage Users" />
+        </ListItem>
+        <ListItem
+          button
+          component={Link}
+          to="/admin/request"
+          className={isActive("/admin/request") ? "active-link" : ""}
+        >
+          <ListItemText primary="Requests" />
+        </ListItem>
+      </List>
       <div className="logout-section">
-        <button className="logout-btn" onClick={handleLogout}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleLogout}
+          className="logout-btn"
+          size="large"
+        >
           Logout
-        </button>
+        </Button>
       </div>
     </div>
   );

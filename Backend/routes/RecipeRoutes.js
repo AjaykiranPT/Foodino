@@ -6,15 +6,15 @@ const {
   getRecipeById,
   updateRecipe,
   deleteRecipe,
-} = require('../controllers/RecipeController'); // Adjust the path and destructure functions
+} = require('../controllers/RecipeController');
 
 const router = express.Router();
 
 // Recipe routes
-router.post('/add', upload.single('image'), createRecipe); // Use the standalone function directly
-router.get('/', getAllRecipes); // Use the standalone function directly
-router.get('/:id', getRecipeById); // Use the standalone function directly
-router.put('/:id', upload.single('image'), updateRecipe); // Use the standalone function directly
-router.delete('/:id', deleteRecipe); // Use the standalone function directly
+router.post('/add', upload.single('image'), createRecipe);
+router.get('/', getAllRecipes);
+router.get('/:id', getRecipeById);
+router.put('/:id', upload.single('image'), updateRecipe);
+router.delete('/:id', deleteRecipe);
 
 module.exports = router;

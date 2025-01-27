@@ -1,82 +1,53 @@
-const Rating = require("../models/Rating"); // Adjust the path as needed
+// controllers/ratingController.js
+const Rating = require("../models/Rating");
+const Recipe = require("../models/Recipe");
 
-// Helper: Validate MongoDB ObjectId format
-const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+// Add or update rating
+exports.addOrUpdateRating = async (req, res) => {
+  const { userId, recipeId, rating } = req.body;
 
-// Create a new rating
-const createRating = async (req, res) => {
+  if (!rating || rating < 0 || rating > 5) {
+    return res.status(400).json({ error: "Rating must be between 0 and 5." });
+  }
+
   try {
-    const { Recipe, Rating: ratingValue, specialRating, RatedBy } = req.body;
+    // Check if the user already rated the recipe
+    const existingRating = await Rating.findOne({ user: userId, recipe: recipeId });
 
-    // Validate required fields
-    if (!Recipe || !RatedBy) {
-      return res.status(400).json({ message: "Recipe and RatedBy are required" });
+    if (existingRating) {
+      // Update existing rating
+      existingRating.rating = rating;
+      await existingRating.save();
+      return res.status(200).json({ message: "Rating updated successfully." });
     }
 
-    // Validate rating value
-    if (ratingValue < 0 || ratingValue > 5) {
-      return res.status(400).json({ message: "Rating must be between 0 and 5" });
-    }
-
-    // Create a new rating
-    const newRating = new Rating({
-      Recipe,
-      Rating: ratingValue,
-      specialRating,
-      RatedBy,
-    });
-
+    // Add new rating
+    const newRating = new Rating({ user: userId, recipe: recipeId, rating });
     await newRating.save();
-    res.status(201).json({ message: "Rating added successfully", rating: newRating });
+
+    res.status(201).json({ message: "Rating added successfully." });
   } catch (error) {
-    console.error("Error creating rating:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to add or update rating." });
   }
 };
 
-// Get all ratings for a specific recipe
-const getRatingsForRecipe = async (req, res) => {
+// Get average rating for a recipe
+exports.getRecipeRating = async (req, res) => {
+  const { recipeId } = req.params;
+
   try {
-    const { recipeId } = req.params;
+    const ratings = await Rating.find({ recipe: recipeId });
+    const totalRatings = ratings.length;
 
-    // Validate recipeId format
-    if (!isValidObjectId(recipeId)) {
-      return res.status(400).json({ message: "Invalid recipe ID format" });
+    if (totalRatings === 0) {
+      return res.status(200).json({ averageRating: 0, totalRatings });
     }
 
-    const ratings = await Rating.find({ Recipe: recipeId }).populate("RatedBy", "name email"); // Populate with user info
-
-    if (ratings.length === 0) {
-      return res.status(404).json({ message: "No ratings found for this recipe" });
-    }
-
-    res.status(200).json(ratings);
+    const averageRating = ratings.reduce((sum, r) => sum + r.rating, 0) / totalRatings;
+    res.status(200).json({ averageRating, totalRatings });
   } catch (error) {
-    console.error("Error fetching ratings:", error);
-    res.status(500).json({ message: "Error fetching ratings", error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch recipe ratings." });
   }
 };
-
-// Delete a rating
-const deleteRating = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Validate ID format
-    if (!isValidObjectId(id)) {
-      return res.status(400).json({ message: "Invalid rating ID format" });
-    }
-
-    const deletedRating = await Rating.findByIdAndDelete(id);
-    if (!deletedRating) {
-      return res.status(404).json({ message: "Rating not found" });
-    }
-
-    res.status(200).json({ message: "Rating deleted successfully", rating: deletedRating });
-  } catch (error) {
-    console.error("Error deleting rating:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
-  }
-};
-
-module.exports = { createRating, getRatingsForRecipe, deleteRating };

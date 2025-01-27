@@ -12,27 +12,60 @@ import {
   ListItemText,
   Rating,
   Avatar,
+  IconButton,
 } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const Recipe = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Recipe ID from URL
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const userId = localStorage.getItem("userId"); // Assuming userId is stored in local storage
 
+  // Fetch recipe details
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/recipes/${id}`);
-        setRecipe(response.data);
+        const recipeResponse = await axios.get(`http://localhost:3000/recipes/${id}`);
+        setRecipe(recipeResponse.data);
+
+        const favoriteResponse = await axios.get(`http://localhost:3000/favorites/user/${userId}`);
+        const isFav = favoriteResponse.data.some((fav) => fav._id === id);
+        setIsFavorite(isFav);
+
+        const ratingResponse = await axios.get(`http://localhost:3000/ratings/recipe/${id}`);
+        const userSpecificRating = ratingResponse.data.averageRating || 0;
+        setUserRating(userSpecificRating);
       } catch (err) {
-        console.error("Error fetching recipe:", err);
+        console.error("Error fetching recipe data:", err);
         setError("Failed to load recipe details. Please try again later.");
       }
     };
 
     fetchRecipe();
-  }, [id]);
+  }, [id, userId]);
+
+  const toggleFavorite = async () => {
+    try {
+      await axios.post("http://localhost:3000/favorites/toggle", { userId, recipeId: id });
+      setIsFavorite((prev) => !prev);
+    } catch (err) {
+      console.error("Error updating favorite status:", err);
+    }
+  };
+
+  const handleRatingChange = async (newRating) => {
+    try {
+      await axios.post("http://localhost:3000/ratings/rate", { userId, recipeId: id, rating: newRating });
+      setUserRating(newRating);
+    } catch (err) {
+      console.error("Error updating rating:", err);
+    }
+  };
 
   if (error) {
     return (
@@ -58,63 +91,70 @@ const Recipe = () => {
 
   return (
     <Box sx={{ padding: "2rem" }}>
-      {/* Sloped Div for Recipe Information */}
-      <Box
-        sx={{
-          position: "relative",
-          background: "#f7f7f7",
-          padding: "2rem",
-          borderRadius: "8px",
-          clipPath: "polygon(0 0, 100% 10%, 100% 100%, 0 90%)",
-          mb: 4,
-        }}
-      >
-        <Grid container spacing={2}>
-          {/* Recipe Image */}
-          <Grid item xs={12} md={6}>
-            <Box
-              component="img"
-              src={recipe.image || "https://via.placeholder.com/600x400?text=No+Image"}
-              alt={recipe.title}
-              sx={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: "8px",
-              }}
-            />
-          </Grid>
-
-          {/* Recipe Details */}
-          <Grid item xs={12} md={6}>
-            <Typography variant="h3" gutterBottom>
-              {recipe.title}
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              <strong>Category:</strong> {recipe.category}
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              <strong>Preparation Time:</strong> {recipe.prepTime || "N/A"} minutes
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              <strong>Rating:</strong>{" "}
-              <Rating value={recipe.rating || 0} readOnly precision={0.5} />
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              <strong>Created By:</strong>{" "}
-              <Chip
-                avatar={<Avatar>{recipe.createdBy?.name?.[0] || "U"}</Avatar>}
-                label={recipe.createdBy?.name || "Unknown User"}
-                variant="outlined"
-              />
-            </Typography>
-          </Grid>
+      <Grid container spacing={2}>
+        {/* Recipe Image */}
+        <Grid item xs={12} md={6} sx={{ position: "relative" }}>
+          <Box
+            component="img"
+            src={recipe.image || "https://via.placeholder.com/600x400?text=No+Image"}
+            alt={recipe.title}
+            sx={{
+              width: "400px",
+              height: "300px",
+              objectFit: "cover",
+              borderRadius: "8px",
+              display: "block",
+              margin: "0 auto",
+            }}
+          />
+          {/* Favorite Button */}
+          <IconButton
+            onClick={toggleFavorite}
+            color={isFavorite ? "error" : "default"}
+            sx={{
+              position: "absolute",
+              top: "30px",
+              right: "10px",
+              background: "rgba(255, 255, 255, 0.8)",
+              borderRadius: "50%",
+            }}
+          >
+            {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          </IconButton>
         </Grid>
-      </Box>
+
+        {/* Recipe Details */}
+        <Grid item xs={12} md={6}>
+          <Typography variant="h3" gutterBottom>
+            {recipe.title}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            <strong>Category:</strong> {recipe.category}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            <strong>Preparation Time:</strong> {recipe.prepTime || "N/A"} minutes
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            <strong>Rating:</strong>{" "}
+            <Rating
+              value={userRating}
+              precision={0.5}
+              onChange={(e, newValue) => handleRatingChange(newValue)}
+            />
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            <strong>Created By:</strong>{" "}
+            <Chip
+              avatar={<Avatar>{recipe.createdBy?.name?.[0] || "U"}</Avatar>}
+              label={recipe.createdBy?.name || "Unknown User"}
+              variant="outlined"
+            />
+          </Typography>
+        </Grid>
+      </Grid>
 
       {/* Ingredients and Steps */}
-      <Grid container spacing={4}>
-        {/* Ingredients */}
+      <Grid container spacing={4} mt={4}>
         <Grid item xs={12} md={6}>
           <Typography variant="h6" gutterBottom>
             Ingredients
@@ -132,7 +172,6 @@ const Recipe = () => {
           </Box>
         </Grid>
 
-        {/* Steps */}
         <Grid item xs={12} md={6}>
           <Typography variant="h6" gutterBottom>
             Instructions

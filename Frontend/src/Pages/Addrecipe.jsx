@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, MenuItem, Alert, IconButton, Box } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import '../styles/AddRecipe.css';
 
 const AddRecipe = () => {
   const [title, setTitle] = useState('');
@@ -10,8 +9,8 @@ const AddRecipe = () => {
   const [category, setCategory] = useState('');
   const [prepTime, setPrepTime] = useState('');
   const [image, setImage] = useState(null);
-  const [ingredients, setIngredients] = useState([]); // Initialize as empty array
-  const [steps, setSteps] = useState([]); // Initialize as empty array
+  const [ingredients, setIngredients] = useState([]);
+  const [instructions, setInstructions] = useState([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -30,29 +29,39 @@ const AddRecipe = () => {
     setIngredients(updatedIngredients);
   };
 
-  const handleStepChange = (index, value) => {
-    const updatedSteps = [...steps];
-    updatedSteps[index] = value;
-    setSteps(updatedSteps);
+  const handleInstructionChange = (index, value) => {
+    const updatedInstructions = [...instructions];
+    updatedInstructions[index] = value;
+    setInstructions(updatedInstructions);
   };
 
   const addIngredient = () => setIngredients([...ingredients, '']);
-  const addStep = () => setSteps([...steps, '']);
+  const addInstruction = () => setInstructions([...instructions, '']);
 
   const removeIngredient = (index) => {
     const updatedIngredients = ingredients.filter((_, i) => i !== index);
     setIngredients(updatedIngredients);
   };
 
-  const removeStep = (index) => {
-    const updatedSteps = steps.filter((_, i) => i !== index);
-    setSteps(updatedSteps);
+  const removeInstruction = (index) => {
+    const updatedInstructions = instructions.filter((_, i) => i !== index);
+    setInstructions(updatedInstructions);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !description || !category || !prepTime || !image || ingredients.length === 0 || steps.length === 0 || ingredients.some(i => !i) || steps.some(s => !s)) {
+    if (
+      !title ||
+      !description ||
+      !category ||
+      !prepTime ||
+      !image ||
+      ingredients.length === 0 ||
+      instructions.length === 0 ||
+      ingredients.some((i) => !i) ||
+      instructions.some((s) => !s)
+    ) {
       setError('All fields are required!');
       return;
     }
@@ -71,7 +80,7 @@ const AddRecipe = () => {
       formData.append('prepTime', prepTime);
       formData.append('image', image);
       formData.append('ingredients', JSON.stringify(ingredients));
-      formData.append('steps', JSON.stringify(steps));
+      formData.append('instructions', JSON.stringify(instructions));
       formData.append('createdBy', userId);
 
       await axios.post('http://localhost:3000/recipes/add', formData, {
@@ -90,121 +99,117 @@ const AddRecipe = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h1 className="text-center mb-4">Add a New Recipe</h1>
+    <div className="add-recipe-container">
+      <h1 className="add-recipe-title">Add a New Recipe</h1>
 
-      {error && <Alert severity="error" className="mb-4">{error}</Alert>}
-      {success && <Alert severity="success" className="mb-4">Recipe added successfully!</Alert>}
+      {error && <div className="add-recipe-alert add-recipe-error">{error}</div>}
+      {success && <div className="add-recipe-alert add-recipe-success">Recipe added successfully!</div>}
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: 'auto' }}>
-        <TextField
-          label="Title"
-          variant="outlined"
-          size="small"
-          fullWidth
+      <form onSubmit={handleSubmit} className="add-recipe-form">
+        <input
+          type="text"
+          placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="mb-2"
+          className="add-recipe-input"
         />
 
-        <TextField
-          label="Description"
-          variant="outlined"
-          multiline
-          rows={2}
-          size="small"
-          fullWidth
+        <textarea
+          placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="mb-2"
+          className="add-recipe-input add-recipe-textarea"
         />
 
-        <TextField
-          select
-          label="Category"
-          variant="outlined"
-          size="small"
-          fullWidth
+        <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="mb-2"
+          className="add-recipe-input"
         >
-          <MenuItem value="Vegetarian">Vegetarian</MenuItem>
-          <MenuItem value="Non-Vegetarian">Non-Vegetarian</MenuItem>
-          <MenuItem value="Desserts">Desserts</MenuItem>
-        </TextField>
+          <option value="">Select Category</option>
+          <option value="Vegetarian">Vegetarian</option>
+          <option value="Non-Vegetarian">Non-Vegetarian</option>
+          <option value="Desserts">Desserts</option>
+        </select>
 
-        <TextField
-          label="Preparation Time (in minutes)"
-          variant="outlined"
+        <input
           type="number"
-          size="small"
-          fullWidth
+          placeholder="Preparation Time (in minutes)"
           value={prepTime}
           onChange={(e) => setPrepTime(e.target.value)}
-          className="mb-2"
+          className="add-recipe-input"
         />
 
-        <div className="mb-3">
+        <div className="add-recipe-section">
           <label>Ingredients</label>
           {ingredients.map((ingredient, index) => (
-            <Box key={index} display="flex" alignItems="center" className="mb-2">
-              <TextField
-                variant="outlined"
-                size="small"
-                fullWidth
+            <div key={index} className="add-recipe-step">
+              <input
+                type="text"
                 placeholder={`Ingredient ${index + 1}`}
                 value={ingredient}
                 onChange={(e) => handleIngredientChange(index, e.target.value)}
+                className="add-recipe-input"
               />
-              <IconButton onClick={() => removeIngredient(index)} color="secondary" size="small" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </Box>
+              <button
+                type="button"
+                onClick={() => removeIngredient(index)}
+                className="add-recipe-delete-btn"
+              >
+                &times;
+              </button>
+            </div>
           ))}
-          <Button type="button" onClick={addIngredient} variant="outlined" className="mt-2">
+          <button type="button" onClick={addIngredient} className="add-recipe-add-btn">
             + Add Ingredient
-          </Button>
+          </button>
         </div>
 
-        <div className="mb-3">
-          <label>Steps</label>
-          {steps.map((step, index) => (
-            <Box key={index} display="flex" alignItems="center" className="mb-2">
-              <TextField
-                variant="outlined"
-                size="small"
-                fullWidth
+        <div className="add-recipe-section">
+          <label>Instructions</label>
+          {instructions.map((instruction, index) => (
+            <div key={index} className="add-recipe-step">
+              <input
+                type="text"
                 placeholder={`Step ${index + 1}`}
-                value={step}
-                onChange={(e) => handleStepChange(index, e.target.value)}
+                value={instruction}
+                onChange={(e) => handleInstructionChange(index, e.target.value)}
+                className="add-recipe-input"
               />
-              <IconButton onClick={() => removeStep(index)} color="secondary" size="small" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </Box>
+              <button
+                type="button"
+                onClick={() => removeInstruction(index)}
+                className="add-recipe-delete-btn"
+              >
+                &times;
+              </button>
+            </div>
           ))}
-          <Button type="button" onClick={addStep} variant="outlined" className="mt-2">
-            + Add Step
-          </Button>
+          <button type="button" onClick={addInstruction} className="add-recipe-add-btn">
+            + Add Instruction
+          </button>
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="imageUpload" className="btn btn-secondary" style={{ width: '100%', borderRadius: '5px' }}>
-            {imagePreview ? <img src={imagePreview} alt="Recipe" style={{ width: '100%', borderRadius: '5px' }} /> : 'Upload Image'}
+        <div className="add-recipe-image-upload">
+          <label htmlFor="imageUpload" className="add-recipe-upload-label">
+            {imagePreview ? (
+              <img src={imagePreview} alt="Preview" className="add-recipe-image-preview" />
+            ) : (
+              'Upload Image'
+            )}
           </label>
           <input
             id="imageUpload"
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
-            style={{ display: 'none' }}
+            className="add-recipe-file-input"
           />
         </div>
 
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <button type="submit" className="add-recipe-submit-btn">
           Add Recipe
-        </Button>
+        </button>
       </form>
     </div>
   );

@@ -7,9 +7,9 @@ const recipeSchema = new mongoose.Schema({
   category: { type: String, required: [true, 'Category is required'] },
   image: { type: String },
   prepTime: { type: Number },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: [true, 'CreatedBy is required'] },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: [true, 'CreatedBy is required'] },
   rating: { type: Number, default: 0 },
-}, { timestamps: true });
+}, { timestamps: true }); 
 
 
 const Recipe = mongoose.model('Recipe', recipeSchema);

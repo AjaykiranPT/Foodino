@@ -104,6 +104,10 @@ h1 {
   width: 100%;
   height: 200px;
   object-fit: cover;
+  border-bottom:solid 5px #e64a19;
+}
+.recipe-image .highlited{
+  border-bottom:solid 5px #4CAF50;
 }
 
 .recipe-details {

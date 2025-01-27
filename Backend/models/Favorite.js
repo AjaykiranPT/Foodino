@@ -1,11 +1,9 @@
-// models/Rating.js
 const mongoose = require("mongoose");
 
-const ratingSchema = new mongoose.Schema({
+const favoriteSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   recipe: { type: mongoose.Schema.Types.ObjectId, ref: "Recipe", required: true },
-  rating: { type: Number, required: true, min: 0, max: 5 },
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Rating", ratingSchema);
+module.exports = mongoose.model("Favorite", favoriteSchema);

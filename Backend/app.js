@@ -8,6 +8,9 @@ require('dotenv').config();
 const userRouter = require('./routes/authRoutes');
 const recipeRouter = require('./routes/RecipeRoutes');
 const uploadRouter = require('./routes/uploadRoutes');
+const upgradeRouter = require('./routes/upgradeRoutes')
+const favoriteRoutes = require("./routes/favoriteRoutes");
+const ratingRoutes = require("./routes/ratingRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -41,16 +44,19 @@ app.get("/", (req, res) => {
   res.send("Welcome to the server!");
 });
 
-// Health Check Endpoint
+
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", uptime: process.uptime() });
 });
 
-app.use("/auth", userRouter);
+app.use("/auth", userRouter, upgradeRouter);
 app.use("/recipes", recipeRouter);
 app.use("/upload", uploadRouter);
+app.use("/favorites", favoriteRoutes);
+app.use("/ratings", ratingRoutes);
 
-// Centralized Error Handling Middleware
+
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
@@ -62,3 +68,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+

@@ -77,30 +77,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Update User
-const updateUser = async (req, res) => {
-  const { password } = req.body;
 
-  if (password) {
-    // Hash the new password before updating
-    req.body.password = await bcrypt.hash(password, 10);
-  }
-
-  try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 // Delete User
 const deleteUser = async (req, res) => {
@@ -135,12 +112,57 @@ const Showprofile = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { password } = req.body;
 
+  if (password) {
+    req.body.password = await bcrypt.hash(password, 10);
+  }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const changepassword = async(req,res) =>{
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.userId; // Get user ID from the authenticated token
+
+  try {
+    const user = await User.findById(userId);
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred' });
+  }
+};
 module.exports = {
   registering,
   loginUser,
   getUsers,
   updateUser,
   deleteUser, 
-  Showprofile
+  Showprofile,
+  updateUser,
+  changepassword
 };
