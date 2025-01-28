@@ -9,10 +9,15 @@
   
   .stat-card {
     flex: 1;
+    margin: 10px;
     padding: 20px;
     color: white;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  .stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
   }
   

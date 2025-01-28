@@ -11,6 +11,7 @@ const uploadRouter = require('./routes/uploadRoutes');
 const upgradeRouter = require('./routes/upgradeRoutes')
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const ratingRoutes = require("./routes/ratingRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -54,6 +55,7 @@ app.use("/recipes", recipeRouter);
 app.use("/upload", uploadRouter);
 app.use("/favorites", favoriteRoutes);
 app.use("/ratings", ratingRoutes);
+app.use("/admin", adminRoutes);
 
 
 

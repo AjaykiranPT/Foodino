@@ -33,13 +33,15 @@ const Recipe = () => {
         const recipeResponse = await axios.get(`http://localhost:3000/recipes/${id}`);
         setRecipe(recipeResponse.data);
 
-        const favoriteResponse = await axios.get(`http://localhost:3000/favorites/user/${userId}`);
-        const isFav = favoriteResponse.data.some((fav) => fav._id === id);
-        setIsFavorite(isFav);
+        if (userId) {
+          const favoriteResponse = await axios.get(`http://localhost:3000/favorites/user/${userId}`);
+          const isFav = favoriteResponse.data.some((fav) => fav._id === id);
+          setIsFavorite(isFav);
 
-        const ratingResponse = await axios.get(`http://localhost:3000/ratings/recipe/${id}`);
-        const userSpecificRating = ratingResponse.data.averageRating || 0;
-        setUserRating(userSpecificRating);
+          const ratingResponse = await axios.get(`http://localhost:3000/ratings/recipe/${id}`);
+          const userSpecificRating = ratingResponse.data.averageRating || 0;
+          setUserRating(userSpecificRating);
+        }
       } catch (err) {
         console.error("Error fetching recipe data:", err);
         setError("Failed to load recipe details. Please try again later.");
@@ -108,19 +110,21 @@ const Recipe = () => {
             }}
           />
           {/* Favorite Button */}
-          <IconButton
-            onClick={toggleFavorite}
-            color={isFavorite ? "error" : "default"}
-            sx={{
-              position: "absolute",
-              top: "30px",
-              right: "10px",
-              background: "rgba(255, 255, 255, 0.8)",
-              borderRadius: "50%",
-            }}
-          >
-            {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-          </IconButton>
+          {userId && (
+            <IconButton
+              onClick={toggleFavorite}
+              color={isFavorite ? "error" : "default"}
+              sx={{
+                position: "absolute",
+                top: "30px",
+                right: "10px",
+                background: "rgba(255, 255, 255, 0.8)",
+                borderRadius: "50%",
+              }}
+            >
+              {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            </IconButton>
+          )}
         </Grid>
 
         {/* Recipe Details */}
@@ -134,14 +138,16 @@ const Recipe = () => {
           <Typography variant="subtitle1" gutterBottom>
             <strong>Preparation Time:</strong> {recipe.prepTime || "N/A"} minutes
           </Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            <strong>Rating:</strong>{" "}
-            <Rating
-              value={userRating}
-              precision={0.5}
-              onChange={(e, newValue) => handleRatingChange(newValue)}
-            />
-          </Typography>
+          {userId && (
+            <Typography variant="subtitle1" gutterBottom>
+              <strong>Rating:</strong>{" "}
+              <Rating
+                value={userRating}
+                precision={0.5}
+                onChange={(e, newValue) => handleRatingChange(newValue)}
+              />
+            </Typography>
+          )}
           <Typography variant="subtitle1" gutterBottom>
             <strong>Created By:</strong>{" "}
             <Chip

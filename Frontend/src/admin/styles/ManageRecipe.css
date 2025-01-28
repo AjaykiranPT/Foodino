@@ -1,0 +1,45 @@
+.manage-recipe {
+    padding: 20px;
+  }
+  
+  .recipe-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .recipe-table th,
+  .recipe-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .recipe-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .delete-btn {
+    background-color: #e53935;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .delete-btn:hover {
+    background-color: #d32f2f;
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .error {
+    text-align: center;
+    color: red;
+    font-size: 18px;
+  }
+  

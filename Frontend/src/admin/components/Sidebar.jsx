@@ -20,7 +20,7 @@ const Sidebar = () => {
     <div className="admin-sidebar">
       <div className="sidebar-header">
         <Typography variant="h4" component="h2" className="sidebar-title">
-          Admin
+          WELCOME
         </Typography>
       </div>
       <Divider style={{ backgroundColor: "white", margin: "20px 0" }} />
