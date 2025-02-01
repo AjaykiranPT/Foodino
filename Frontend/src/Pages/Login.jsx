@@ -23,7 +23,7 @@ const Login = () => {
       });
 
       const { userid, userrole } = response.data;
-
+      console.log(userrole)
       if (userid && userrole) {
         localStorage.setItem('userId', userid);
         localStorage.setItem('userRole', userrole);

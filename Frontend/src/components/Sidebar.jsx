@@ -9,7 +9,11 @@ import {
   FaSignInAlt,
   FaUserPlus,
 } from 'react-icons/fa';
-
+import { FaUserCircle } from 'react-icons/fa';
+import { IoMdSettings } from 'react-icons/io';
+import { IoIosAddCircle } from "react-icons/io";
+import { FiMessageCircle } from "react-icons/fi";
+import { TbBroadcast } from "react-icons/tb";
 const Sidebar = () => {
   const location = useLocation();
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'Guest');
@@ -18,38 +22,42 @@ const Sidebar = () => {
   useEffect(() => {
     const handleStorageChange = () => {
       const role = localStorage.getItem('userRole');
-      console.log('User role changed to:', role); // Log when user role changes
+      console.log('User role changed to:', role); 
       setUserRole(role || 'Guest');
     };
 
-    // Listen for storage changes (if you are using multiple tabs)
     window.addEventListener('storage', handleStorageChange);
-
-    // Cleanup function
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
-  // Define the menu items based on user role
   const getMenuItems = (role) => {
     switch (role) {
       case 'masterchef':
         return [
-          { path: '/dashboard', label: 'Dashboard', icon: <FaHome /> },
-          { path: '/my-recipes', label: 'My Recipes', icon: <FaUtensils /> },
-          { path: '/rate-recipes', label: 'Rate Recipes', icon: <FaStar /> },
+          { path: '/explore' ,icon: <FaUtensils /> },
+          { path: '/broadcast', icon: <TbBroadcast /> },
+          { path: '/addrecipe' ,icon:<IoIosAddCircle/>},
+          { path: '/setting' ,icon:<IoMdSettings/>},
+          { path: '/profile' ,icon:<FaUserCircle/>},  
         ];
       case 'foodie':
         return [
-          { path: '/explore', label: 'Explore Recipes', icon: <FaUtensils /> },
-          { path: '/favorites', label: 'Favorites', icon: <FaStar /> },
+          { path: '/explore' ,icon: <FaUtensils size={'15px'}/> },
+          { path: '/chat', icon: <FiMessageCircle  size={'20px'}/> },
+          { path: '/addrecipe' ,icon:<IoIosAddCircle size={'20px'}/>},
+          { path: '/setting' ,icon:<IoMdSettings size={'20px'}/>},
+          { path: '/profile' ,icon:<FaUserCircle size={'18px'}/>}
         ];
-      case 'Guest':
       default:
         return [
-          { path: '/', label: 'Home', icon: <FaHome /> },
-          { path: '/explore', label: 'Explore', icon: <FaUtensils /> },
+          { path: '/explore' ,icon: <FaUtensils size={'15px'}/> },
+          { path: '/chat', icon: <FiMessageCircle  size={'20px'}/> },
+          { path: '/login' ,icon:<IoIosAddCircle size={'20px'}/>},
+          { path: '/login' ,icon:<IoMdSettings size={'20px'}/>},
+          { path: '/login' ,icon:<FaUserCircle size={'18px'}/>},
+                    
         ];
     }
   };
@@ -57,8 +65,8 @@ const Sidebar = () => {
   const menuItems = getMenuItems(userRole);
 
   return (
-    <div className="sidebar bg-dark text-light mx-2 px-3" style={{ height: 'auto', minHeight:'100vh', width: '250px',borderRadius:'1.5rem'}}>
-      <ul className="list-unstyled mt-4">
+    <div className="sidebar bg-dark text-light mx-2 px-3" style={{ Height:'80vh',borderRadius:'1.5rem'}}>
+     <ul className="list-unstyled mt-4" style={{ display: 'flex',flexDirection:'column', justifyContent: 'space-evenly',height:'100%' }}>
         {menuItems.map((item, index) => (
           <li
             key={index}
@@ -69,7 +77,7 @@ const Sidebar = () => {
               className="text-light text-decoration-none d-flex align-items-center p-2"
               aria-label={item.label}
             >
-              {item.icon} <span className="ms-2">{item.label}</span>
+              {item.icon} 
             </Link>
           </li>
         ))}

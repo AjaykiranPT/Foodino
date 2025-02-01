@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/ManageRecipe.css";
+import { Button } from "@mui/material"; // Import Material-UI Button
 
 const ManageRecipe = () => {
   const [recipes, setRecipes] = useState([]);
@@ -47,33 +48,25 @@ const ManageRecipe = () => {
   return (
     <div className="manage-recipe">
       <h2>Manage Recipes</h2>
-      <table className="recipe-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Created By</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recipes.map((recipe) => (
-            <tr key={recipe._id}>
-              <td>{recipe.title}</td>
-              <td>{recipe.category}</td>
-              <td>{recipe.createdBy?.name || "N/A"}</td>
-              <td>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(recipe._id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="recipe-list">
+        {recipes.map((recipe) => (
+          <div key={recipe._id} className="recipe-card">
+            <img src={recipe.image} alt={recipe.title} className="recipe-image" />
+            <div className="recipe-details">
+              <h3>{recipe.title}</h3>
+              <p>Category: {recipe.category}</p>
+              <p>Created By: {recipe.createdBy?.name || "N/A"}</p>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleDelete(recipe._id)}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -38,7 +38,7 @@ const updateUser = async (req, res) => {
 // Manage Recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find().populate("createdBy", "name email");
+    const recipes = await Recipe.find();
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch recipes" });

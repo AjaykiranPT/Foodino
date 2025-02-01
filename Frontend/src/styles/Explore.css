@@ -4,7 +4,10 @@
   border-radius: 8px;
   display: flex;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height: 100px auto;
+  width: 80%;
+}
+.explore-container::-webkit-scrollbar{
+  display: none;
 }
 
 h1 {
@@ -21,14 +24,6 @@ h1 {
   position: relative;
 }
 
-.recipes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: start;
-  flex: 0 0 75%;
-  width: 80%;
-}
 
 .explore-sidebar {
   flex: 0 0 20%;
@@ -38,7 +33,7 @@ h1 {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
   margin-left: 20px;
   right: 30px;
-  width: 20%;
+  width: 15%;
   position: absolute;
   
 }
@@ -83,6 +78,14 @@ h1 {
   background-color: #ff5722;
   color: white;
   border-color: #e64a19;
+}
+
+.recipes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: start;
+  flex: 0 0 75%;
 }
 
 .recipe-card {

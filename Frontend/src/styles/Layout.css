@@ -1,26 +1,8 @@
-.layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+.maindiv{
+  height: 80vh;
+  overflow-y: auto;
+  margin: 20px;
 }
-
-.layout-content {
-  display: flex;
-  flex: 1;
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto; /* Enables scrolling for long content */
-}
-
-@media (max-width: 768px) {
-  .layout-content {
-    flex-direction: column; /* Stack sidebar and content on smaller screens */
-  }
-
-  .main-content {
-    padding: 10px; /* Reduce padding on smaller screens */
-  }
+.maindiv::-webkit-scrollbar{
+  display: none;
 }

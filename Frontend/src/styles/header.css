@@ -1,14 +1,17 @@
 /* Header Styling */
 .header {
   display: flex;
-  background-color: #343a40; /* Dark background */
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.2rem;
-  margin: 0.5rem;
+  justify-content: center;
   border-radius: 1rem;
 }
-
+.logo-container{
+  background-image: linear-gradient(black,rgb(40, 13, 13));
+  padding: 10px 100px;
+  border-radius: 0 0 40px 40px;
+  position: relative;
+  overflow: hidden;
+}
 .header-brand {
   color: #ff5722; /* Brand color */
   font-weight: bold;
@@ -16,50 +19,15 @@
   margin: 0;
   text-decoration: none;
 }
-
-.header-icons {
-  display: flex;
-  align-items: center;
+.orange1{
+  position: absolute;
+  width: 100px;
+  right: -10px;
+  top: -50px;
 }
-
-.header-icon {
-  color: #ffffff;
-  cursor: pointer;
-  margin: 0 0.5rem;
-  transition: color 0.3s ease;
-}
-
-.header-icon:hover {
-  color: #ff5722; /* Hover color */
-}
-
-/* Dropdown Styling */
-/* Dropdown Menu */
-.dropdown-container {
-  position: relative; /* Relative positioning for dropdown */
-}
-
-.dropdown-menu {
-  position: absolute; /* Absolute positioning for the dropdown */
-  top: 30px; /* Adjust dropdown position (below the profile icon) */
-  right: 0; /* Align dropdown to the right */
-  background-color: #ffffff; /* White background for dropdown */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Subtle shadow for visibility */
-  border-radius: 5px;
-  z-index: 1000; /* Ensure dropdown appears above other elements */
-  display: block; /* Ensure it's visible */
-  min-width: 150px; /* Minimum width for the dropdown */
-}
-
-.dropdown-item {
-  padding: 0.75rem 1rem; /* Padding for dropdown items */
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #333; /* Dark text color */
-  text-align: left;
-  white-space: nowrap;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa; /* Light background on hover */
+.orange2{
+  position: absolute;
+  width: 120px;
+  left: -20px;
+  bottom: -60px;
 }

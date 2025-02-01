@@ -107,8 +107,10 @@ const Explore = () => {
           ))}
         </div>
 
-        {/* Sidebar for filter and sort */}
-        <div className="explore-sidebar">
+        
+      </div>
+      {/* Sidebar for filter and sort */}
+      <div className="explore-sidebar">
           <div className="filter-sort">
             <div className="search-container">
               <input
@@ -180,7 +182,6 @@ const Explore = () => {
             )}
           </div>
         </div>
-      </div>
 
       {error && <div className="error-message">{error}</div>}
     </div>

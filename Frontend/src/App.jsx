@@ -21,6 +21,9 @@ import ManageUser from './admin/pages/ManageUsers.jsx'
 import ManageRecipe from './admin/pages/ManageRecipes.jsx'
 import Request from './admin/pages/Request.jsx'
 
+import UserChat from './Pages/UserChat.jsx'
+import Broadcast from './Pages/Broadcast.jsx'
+
 const ProtectedRoute = ({ children }) => {
   const userId = localStorage.getItem('userId');
   return userId ? children : <Navigate to="/login" />; 
@@ -41,6 +44,8 @@ const App = () => {
           <Route path="/addrecipe" element={<ProtectedRoute><Addrecipe /></ProtectedRoute>} />
           <Route path="/setting" element={<ProtectedRoute><Setting /></ProtectedRoute>} />
           <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
+          <Route path='/chat' element={<UserChat/>}/> 
+          <Route path='/Broadcast' element={<Broadcast/>}/> 
         </Route>
         
         <Route path="/" element={<Home />} />
@@ -52,8 +57,9 @@ const App = () => {
           <Route path="/admin/users" element={<ManageUser/>}/>
           <Route path="/admin/recipes" element={<ManageRecipe/>}/>
           <Route path="/admin/request" element={<Request/>}/>
-          <Route path="/settings" element={<Dashboard/>}/>
+          <Route path="/admin/setting" element={<Dashboard/>}/>
         </Route>
+
       </Routes>
     </Router>
   );

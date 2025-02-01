@@ -105,6 +105,9 @@ const Showprofile = async (req, res) => {
       name: user.name,
       email: user.email,
       phonenumber: user.phonenumber,
+      age:user.age,
+      role:user.role
+
     });
   } catch (error) {
     console.error("Error fetching user profile:", error); // Improved error logging
