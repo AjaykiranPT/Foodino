@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
+import '../styles/broadcast.css'
 
 const socket = io("http://localhost:3000");
 

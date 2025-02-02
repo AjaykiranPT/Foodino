@@ -35,7 +35,7 @@ const createRecipe = async (req, res) => {
 // Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find().populate('createdBy', 'name');
+    const recipes = await Recipe.find().populate('createdBy', 'name role');
     res.status(200).json(recipes);
   } catch (error) {
     console.error("Error retrieving recipes:", error);
@@ -46,9 +46,9 @@ const getAllRecipes = async (req, res) => {
 // Get a recipe by ID
 const getRecipeById = async (req, res) => {
   const { id } = req.params;
-
+  console.log(id)
   try {
-    const recipe = await Recipe.findById(id).populate('createdBy', 'name');
+    const recipe = await Recipe.findById(id).populate('createdBy', 'name role');
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found.' });
     }

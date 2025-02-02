@@ -13,6 +13,8 @@ import {
   Rating,
   Avatar,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -25,6 +27,8 @@ const Recipe = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const userId = localStorage.getItem("userId"); // Assuming userId is stored in local storage
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   // Fetch recipe details
   useEffect(() => {
@@ -55,8 +59,11 @@ const Recipe = () => {
     try {
       await axios.post("http://localhost:3000/favorites/toggle", { userId, recipeId: id });
       setIsFavorite((prev) => !prev);
+      setSnackbarMessage(isFavorite ? "Removed from favorites" : "Added to favorites");
+      setSnackbarOpen(true);
     } catch (err) {
       console.error("Error updating favorite status:", err);
+      setError("Failed to update favorite status. Please try again.");
     }
   };
 
@@ -66,7 +73,12 @@ const Recipe = () => {
       setUserRating(newRating);
     } catch (err) {
       console.error("Error updating rating:", err);
+      setError("Failed to update rating. Please try again.");
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   if (error) {
@@ -154,6 +166,7 @@ const Recipe = () => {
               avatar={<Avatar>{recipe.createdBy?.name?.[0] || "U"}</Avatar>}
               label={recipe.createdBy?.name || "Unknown User"}
               variant="outlined"
+              sx={recipe.createdBy?.role === 'masterChef' ? { border: '2px solid red', background: 'orange' } : {}}
             />
           </Typography>
         </Grid>
@@ -199,6 +212,13 @@ const Recipe = () => {
           </List>
         </Grid>
       </Grid>
+
+      {/* Snackbar for notifications */}
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

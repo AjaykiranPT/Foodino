@@ -109,9 +109,11 @@ h1 {
   object-fit: cover;
   border-bottom:solid 5px #e64a19;
 }
-.recipe-image .highlited{
-  border-bottom:solid 5px #4CAF50;
+.highlight {
+  border: 2px solid red; /* Example style */
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); /* Optional style */
 }
+
 
 .recipe-details {
   padding: 15px;

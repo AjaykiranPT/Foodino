@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AddRecipe.css';
+import { IoIosAddCircle } from "react-icons/io";
+
 
 const AddRecipe = () => {
   const [title, setTitle] = useState('');
@@ -9,11 +11,11 @@ const AddRecipe = () => {
   const [category, setCategory] = useState('');
   const [prepTime, setPrepTime] = useState('');
   const [image, setImage] = useState(null);
-  const [ingredients, setIngredients] = useState([]);
-  const [instructions, setInstructions] = useState([]);
+  const [ingredients, setIngredients] = useState(['']);
+  const [instructions, setInstructions] = useState(['']);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState('selectimage.jpg '); // Placeholder image
 
   const navigate = useNavigate();
 
@@ -106,105 +108,110 @@ const AddRecipe = () => {
       {success && <div className="add-recipe-alert add-recipe-success">Recipe added successfully!</div>}
 
       <form onSubmit={handleSubmit} className="add-recipe-form">
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="add-recipe-input"
-        />
+        <div className="add-recipe-header">
+          <div className="add-recipe-info">
+            <input
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="add-recipe-input"
+            />
 
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="add-recipe-input add-recipe-textarea"
-        />
+            <textarea
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="add-recipe-input add-recipe-textarea"
+            />
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="add-recipe-input"
-        >
-          <option value="">Select Category</option>
-          <option value="Vegetarian">Vegetarian</option>
-          <option value="Non-Vegetarian">Non-Vegetarian</option>
-          <option value="Desserts">Desserts</option>
-        </select>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="add-recipe-input"
+            >
+              <option value="">Select Category</option>
+              <option value="Vegetarian">Vegetarian</option>
+              <option value="Non-Vegetarian">Non-Vegetarian</option>
+              <option value="Desserts">Desserts</option>
+            </select>
 
-        <input
-          type="number"
-          placeholder="Preparation Time (in minutes)"
-          value={prepTime}
-          onChange={(e) => setPrepTime(e.target.value)}
-          className="add-recipe-input"
-        />
+            <input
+              type="number"
+              placeholder="Preparation Time (in minutes)"
+              value={prepTime}
+              onChange={(e) => setPrepTime(e.target.value)}
+              className="add-recipe-input"
+            />
+          </div>
+
+          <div className="add-recipe-image-upload">
+            <label htmlFor="imageUpload" className="add-recipe-upload-label">
+              <img src={imagePreview} alt="Preview" className="add-recipe-image-preview" />
+            </label>
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="add-recipe-file-input"
+            />
+          </div>
+        </div>
 
         <div className="add-recipe-section">
           <label>Ingredients</label>
-          {ingredients.map((ingredient, index) => (
-            <div key={index} className="add-recipe-step">
-              <input
-                type="text"
-                placeholder={`Ingredient ${index + 1}`}
-                value={ingredient}
-                onChange={(e) => handleIngredientChange(index, e.target.value)}
-                className="add-recipe-input"
-              />
-              <button
-                type="button"
-                onClick={() => removeIngredient(index)}
-                className="add-recipe-delete-btn"
-              >
-                &times;
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={addIngredient} className="add-recipe-add-btn">
-            + Add Ingredient
-          </button>
+          <div className="add-recipe-ingredients">
+            {ingredients.map((ingredient, index) => (
+              <div key={index} className="add-recipe-ingredient">
+                <input
+                  type="text"
+                  placeholder={`Ingredient ${index + 1}`}
+                  value={ingredient}
+                  onChange={(e) => handleIngredientChange(index, e.target.value)}
+                  className="add-recipe-input ingredient-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeIngredient(index)}
+                  className="add-recipe-delete-btn"
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+            <button type="button" onClick={addIngredient} className="add-recipe-add-btn">
+              <IoIosAddCircle size={'2em'}/>
+            </button>
+          </div>
         </div>
 
         <div className="add-recipe-section">
           <label>Instructions</label>
-          {instructions.map((instruction, index) => (
-            <div key={index} className="add-recipe-step">
-              <input
-                type="text"
-                placeholder={`Step ${index + 1}`}
-                value={instruction}
-                onChange={(e) => handleInstructionChange(index, e.target.value)}
-                className="add-recipe-input"
-              />
-              <button
-                type="button"
-                onClick={() => removeInstruction(index)}
-                className="add-recipe-delete-btn"
-              >
-                &times;
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={addInstruction} className="add-recipe-add-btn">
-            + Add Instruction
-          </button>
-        </div>
-
-        <div className="add-recipe-image-upload">
-          <label htmlFor="imageUpload" className="add-recipe-upload-label">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="add-recipe-image-preview" />
-            ) : (
-              'Upload Image'
-            )}
-          </label>
-          <input
-            id="imageUpload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="add-recipe-file-input"
-          />
+          <div className="add-recipe-steps">
+            {instructions.map((instruction, index) => (
+              <div key={index} className="add-recipe-step">
+                <span className="instruction-index">{index + 1}</span>
+                <input
+                  type="text"
+                  placeholder={`Step ${index + 1}`}
+                  value={instruction}
+                  onChange={(e) => handleInstructionChange(index, e.target.value)}
+                  className="add-recipe-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeInstruction(index)}
+                  className="add-recipe-delete-btn"
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+            <button type="button" onClick={addInstruction} className="add-recipe-add-btn">
+              <IoIosAddCircle size={'3em'}/>
+            </button> 
+          </div>
         </div>
 
         <button type="submit" className="add-recipe-submit-btn">

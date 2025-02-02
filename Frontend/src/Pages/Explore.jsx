@@ -86,8 +86,9 @@ const Explore = () => {
               <img
                 src={recipe.image}
                 alt={recipe.title}
-                className="recipe-image"
+                className={`recipe-image ${recipe.createdBy.role === 'masterChef' ? 'highlight' : ''}`}
               />
+
               <div className="recipe-details">
                 <h5 className="recipe-title">{recipe.title}</h5>
                 <p className="recipe-description">{recipe.description}</p>

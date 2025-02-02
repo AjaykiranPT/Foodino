@@ -68,45 +68,41 @@ const ManageUsers = () => {
   return (
     <div className="manage-users">
       <h2>Manage Users</h2>
-      <table className="users-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.phonenumber}</td>
-              <td>{user.role}</td>
-              <td>{user.isblocked ? "Blocked" : "Active"}</td>
-              <td>
-                <button
-                  className="block-btn"
-                  onClick={() => handleBlockUnblock(user._id, user.isblocked)}
-                >
-                  {user.isblocked ? "Unblock" : "Block"}
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(user._id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="users-container">
+        {users.map((user) => (
+          <div key={user._id} className="user-card">
+            <div className="user-avatar">
+              {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+            </div>
+            <div className="user-info">
+              <p><strong>{user.name}</strong></p>
+              <p>{user.email}</p>
+              <p>{user.phonenumber}</p>
+              <p>Role: {user.role}</p>
+              <p className={`status ${user.isblocked ? "blocked" : "active"}`}>
+                {user.isblocked ? "Blocked" : "Active"}
+              </p>
+            </div>
+            <div className="user-actions">
+              <button
+                className="block-btn"
+                onClick={() => handleBlockUnblock(user._id, user.isblocked)}
+              >
+                {user.isblocked ? "Unblock" : "Block"}
+              </button>
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(user._id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
+  
 };
 
 export default ManageUsers;
