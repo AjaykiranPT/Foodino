@@ -24,24 +24,7 @@ const ManageUsers = () => {
     fetchUsers();
   }, []);
 
-  const handleBlockUnblock = async (userId, isBlocked) => {
-    const action = isBlocked ? "Unblock" : "Block";
-    const confirmAction = window.confirm(`Are you sure you want to ${action} this user?`);
-    if (!confirmAction) return;
-
-    try {
-      await axios.patch(`http://localhost:3000/admin/users/${userId}/block`, { isBlocked: !isBlocked });
-      setUsers((prev) =>
-        prev.map((user) =>
-          user._id === userId ? { ...user, isblocked: !isBlocked } : user
-        )
-      );
-      alert(`User ${action.toLowerCase()}ed successfully!`);
-    } catch (err) {
-      console.error(`Error ${action.toLowerCase()}ing user:`, err);
-      alert(`Failed to ${action.toLowerCase()} user. Please try again.`);
-    }
-  };
+  
 
   const handleDelete = async (userId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this user?");
@@ -79,17 +62,9 @@ const ManageUsers = () => {
               <p>{user.email}</p>
               <p>{user.phonenumber}</p>
               <p>Role: {user.role}</p>
-              <p className={`status ${user.isblocked ? "blocked" : "active"}`}>
-                {user.isblocked ? "Blocked" : "Active"}
-              </p>
             </div>
             <div className="user-actions">
-              <button
-                className="block-btn"
-                onClick={() => handleBlockUnblock(user._id, user.isblocked)}
-              >
-                {user.isblocked ? "Unblock" : "Block"}
-              </button>
+              
               <button
                 className="delete-btn"
                 onClick={() => handleDelete(user._id)}

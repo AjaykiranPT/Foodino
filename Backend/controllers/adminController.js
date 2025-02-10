@@ -98,6 +98,21 @@ const updateRequestStatus = async (req, res) => {
 };
 
 
+const deleteUser = async (req, res) =>{
+  try{
+    const id = req.params.id;
+    deletedUser = User.findByIdAndDelete(id);
+    if(!deletedUser){
+      return res.status(404).json({ error: "User not found" });
+    }
+    return res.status(200).json({ error: "User successfully deleted" });
+  }
+  catch(error){
+    res.status(500).json({ error: "Failed to delete user" });
+  }
+}
+
+
 module.exports = {
   getDashboardStats,
   getAllUsers,
@@ -106,4 +121,5 @@ module.exports = {
   deleteRecipe,
   getUpgradeRequests,
   updateRequestStatus,
+  deleteUser
 };

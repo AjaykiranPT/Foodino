@@ -7,6 +7,7 @@ const {
   deleteRecipe,
   getUpgradeRequests,
   updateRequestStatus,
+  deleteUser
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get("/stats", getDashboardStats);
 // Manage Users
 router.get("/users", getAllUsers);
 router.put("/users", updateUser);
+router.delete("/users/:id", deleteUser);
 
 // Manage Recipes
 router.get("/recipes", getAllRecipes);
