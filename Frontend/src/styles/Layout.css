@@ -2,6 +2,7 @@
   height: 80vh;
   overflow-y: auto;
   margin: 20px;
+  justify-content: center;
 }
 .maindiv::-webkit-scrollbar{
   display: none;

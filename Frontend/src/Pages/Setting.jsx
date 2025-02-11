@@ -245,10 +245,7 @@ const Settings = () => {
               Change Password
             </button>
             {passwordChangeMessage && <p>{passwordChangeMessage}</p>}
-            <div className="danger-zone">
-              <h3>Danger Zone</h3>
-              <button className="delete-account-button">Delete Account</button>
-            </div>
+      
           </div>
         )}
       </div>

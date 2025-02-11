@@ -200,7 +200,7 @@ const Recipe = () => {
               <ListItem
                 key={index}
                 sx={{
-                  background: "#f0f0f0",
+                  background: "#ff5722",
                   marginBottom: "0.5rem",
                   borderRadius: "8px",
                   padding: "1rem",

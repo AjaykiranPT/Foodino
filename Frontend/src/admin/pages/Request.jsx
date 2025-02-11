@@ -23,15 +23,17 @@ const Request = () => {
     fetchRequests();
   }, []);
 
-  const handleAction = async (requestId, status) => {
+  const handleAction = async (requestId,userId, status) => {
     const confirmAction = window.confirm(
       `Are you sure you want to ${status.toLowerCase()} this request?`
     );
     if (!confirmAction) return;
 
     try {
+
       const response = await axios.put("http://localhost:3000/admin/requests", {
         requestId,
+        userId,
         status,
       });
       if (response.status === 200) {
@@ -88,7 +90,7 @@ const Request = () => {
                   <>
                     <button
                       className="approve-btn"
-                      onClick={() => handleAction(request._id, "Approved")}
+                      onClick={() => handleAction(request._id,request.userId, "Approved")}
                     >
                       Approve
                     </button>

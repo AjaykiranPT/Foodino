@@ -15,7 +15,7 @@ const AddRecipe = () => {
   const [instructions, setInstructions] = useState(['']);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [imagePreview, setImagePreview] = useState('selectimage.jpg '); // Placeholder image
+  const [imagePreview, setImagePreview] = useState(''); // Placeholder image
 
   const navigate = useNavigate();
 
@@ -52,53 +52,52 @@ const AddRecipe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !title ||
-      !description ||
-      !category ||
-      !prepTime ||
-      !image ||
-      ingredients.length === 0 ||
-      instructions.length === 0 ||
-      ingredients.some((i) => !i) ||
-      instructions.some((s) => !s)
-    ) {
+  
+    if (!title || !description || !category || !prepTime || !image) {
       setError('All fields are required!');
       return;
     }
-
+  
     try {
       const userId = localStorage.getItem('userId');
       if (!userId) {
         setError('User is not authenticated. Please log in again.');
         return;
       }
-
+  
       const formData = new FormData();
+      formData.append('image', image);
       formData.append('title', title);
       formData.append('description', description);
       formData.append('category', category);
       formData.append('prepTime', prepTime);
-      formData.append('image', image);
       formData.append('ingredients', JSON.stringify(ingredients));
       formData.append('instructions', JSON.stringify(instructions));
       formData.append('createdBy', userId);
-
-      await axios.post('http://localhost:3000/recipes/add', formData, {
+  
+      // Debugging: Log formData values
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+  
+      const response = await axios.post('http://localhost:3000/recipes/add', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      setSuccess(true);
-      setError('');
-      navigate('/');
+  
+      if (response.status === 200) {
+        setSuccess(true);
+        setError('');
+        navigate('/');
+      }
     } catch (err) {
       console.error('Error adding recipe:', err);
       setError('Failed to add recipe. Please try again.');
     }
   };
+  
+  
 
   return (
     <div className="add-recipe-container">
@@ -147,7 +146,11 @@ const AddRecipe = () => {
 
           <div className="add-recipe-image-upload">
             <label htmlFor="imageUpload" className="add-recipe-upload-label">
-              <img src={imagePreview} alt="Preview" className="add-recipe-image-preview" />
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" className="add-recipe-image-preview" />
+              ) : (
+                <div className="add-recipe-placeholder">Select Image</div>
+              )}
             </label>
             <input
               id="imageUpload"
@@ -157,6 +160,7 @@ const AddRecipe = () => {
               className="add-recipe-file-input"
             />
           </div>
+
         </div>
 
         <div className="add-recipe-section">

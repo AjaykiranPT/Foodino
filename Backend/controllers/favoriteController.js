@@ -30,16 +30,20 @@ const getFavoritesByUser = async (req, res) => {
     const favorites = await Favorite.find({ user: userId }).populate("recipe");
 
     if (!favorites || favorites.length === 0) {
-      return res.status(404).json({ message: "No favorite recipes found." });
+      return res.status(200).json([]); // Return an empty array instead of a 404 error
     }
 
-    // Extract recipe details
-    const formattedFavorites = favorites.map((fav) => fav.recipe);
+    // Ensure recipes exist before returning them
+    const formattedFavorites = favorites
+      .map((fav) => fav.recipe)
+      .filter((recipe) => recipe !== null);
+
     res.status(200).json(formattedFavorites);
   } catch (error) {
     console.error("Error fetching favorites:", error);
     res.status(500).json({ message: "Failed to fetch favorites." });
   }
 };
+
 
 module.exports = { toggleFavorite, getFavoritesByUser };

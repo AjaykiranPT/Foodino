@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
-const fileUpload = require("express-fileupload");
 require("dotenv").config();
 const http = require("http");
 const { Server } = require("socket.io");
@@ -24,11 +23,10 @@ if (!mongoUrl) {
   process.exit(1);
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(fileUpload({ useTempFiles: true }));
 app.use(cors());
 app.use(helmet());
+app.use(express.json({ limit: "10mb" })); // Increased limit
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -63,6 +61,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", uptime: process.uptime() });
 });
 
+// Routes
 app.use("/auth", userRouter, upgradeRouter);
 app.use("/recipes", recipeRouter);
 app.use("/upload", uploadRouter);
@@ -71,6 +70,7 @@ app.use("/ratings", ratingRoutes);
 app.use("/admin", adminRoutes);
 app.use("/broadcasts", broadcastRoutes);
 
+// Global error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });

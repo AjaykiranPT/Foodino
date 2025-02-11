@@ -139,17 +139,15 @@ const updateUser = async (req, res) => {
 };
 
 const changepassword = async(req,res) =>{
-  const { currentPassword, newPassword } = req.body;
-  const userId = req.userId; // Get user ID from the authenticated token
-
+  const { userId, currentPassword, newPassword } = req.body;
   try {
     const user = await User.findById(userId);
     const isMatch = await bcrypt.compare(currentPassword, user.password);
-
+    
     if (!isMatch) {
       return res.status(400).json({ message: 'Current password is incorrect' });
     }
-
+    
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     await user.save();

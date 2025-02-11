@@ -1,85 +1,120 @@
 .favorites-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-  }
-  
-  h1 {
-    font-size: 2rem;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  .fav-recipes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .fav-recipes .recipe-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: 250px;
-    transition: transform 0.2s;
-    display: flex;
-    flex-direction: column;
-    height: 300px;
-  }
-  
-  .fav-recipes .recipe-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .recipe-image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-  
-  .recipe-details {
-    padding: 15px;
-    text-align: center;
-  }
-  
-  .recipe-details h3 {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .recipe-details p {
-    font-size: 0.9rem;
-    color: #555;
-    margin: 5px 0;
-  }
-  
-  
-  .fav-button {
-    background-color: #ff5722;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 15px auto;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  button:hover {
-    background-color: #e64a19;
-    transform: scale(1.05);
-  }
-  
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Make the recipes scroll horizontally */
+.fav-recipes {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  padding: 10px;
+  white-space: nowrap; /* Prevent wrapping */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #ccc transparent;
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+.fav-recipes::-webkit-scrollbar {
+  height: 8px;
+}
+
+.fav-recipes::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 10px;
+}
+
+.fav-recipes::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Fixed width and height for each recipe card */
+.fav-recipes .recipe-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  width: 250px; /* Fixed width */
+  height: 350px; /* Fixed height */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.fav-recipes .recipe-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Image with fixed size */
+.recipe-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Center text and limit text overflow */
+.recipe-details {
+  padding: 15px;
+  text-align: center;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.recipe-details h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recipe-details p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 5px 0;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+/* Button styling */
+.fav-button {
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  width: 80%;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.fav-button:hover {
+  background-color: #e64a19;
+}

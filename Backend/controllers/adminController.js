@@ -9,7 +9,17 @@ const getDashboardStats = async (req, res) => {
     const recipeCount = await Recipe.countDocuments();
     const pendingRequests = await UpgradeRequest.countDocuments({ status: "Pending" });
 
-    res.status(200).json({ userCount, recipeCount, pendingRequests });
+    // Get today's date at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Count today's users
+    const todayUsers = await User.countDocuments({ createdAt: { $gte: today } });
+
+    // Count today's recipes
+    const todayRecipes = await Recipe.countDocuments({ createdAt: { $gte: today } });
+
+    res.status(200).json({ userCount, recipeCount, pendingRequests, todayRecipes, todayUsers });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch dashboard stats" });
   }
@@ -38,7 +48,7 @@ const updateUser = async (req, res) => {
 // Manage Recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find();
+    const recipes = await Recipe.find().populate('createdBy', 'name');
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch recipes" });
@@ -59,17 +69,17 @@ const deleteRecipe = async (req, res) => {
 const getUpgradeRequests = async (req, res) => {
   try {
     // Fetch all upgrade requests
-    const requests = await UpgradeRequest.find();
+    const requests = await UpgradeRequest.find().populate('userId', 'name email');
 
     // Fetch user details for each request
-    const userIds = requests.map((request) => request.userId); // Get all user IDs from requests
-    const users = await User.find({ _id: { $in: userIds } }); // Fetch corresponding users
+    const userIds = requests.map((request) => request.userId);
+    const users = await User.find({ _id: { $in: userIds } });
 
     // Map user data to requests
     const requestsWithUserDetails = requests.map((request) => {
-      const user = users.find((user) => user._id.toString() === request.userId.toString()); // Match user by ID
+      const user = users.find((user) => user._id.toString() === request.userId.toString());
       return {
-        ...request._doc, // Include all original request fields
+        ...request._doc,
         userName: user?.name || "Unknown User",
         userEmail: user?.email || "Unknown Email",
       };
@@ -82,36 +92,41 @@ const getUpgradeRequests = async (req, res) => {
   }
 };
 
-
-
 const updateRequestStatus = async (req, res) => {
-  const { requestId, status } = req.body;
+  const { requestId, status, userId } = req.body;
   try {
-    const updatedRequest = await UpgradeRequest.findByIdAndUpdate(requestId, { status }, { new: true });
+    let updatedUser;
+    if (status === 'Approved') {
+      updatedUser = await User.findByIdAndUpdate(userId, { role: 'masterchef' });
+    }
+    
+    let updatedRequest;
+    if (updatedUser) {
+      updatedRequest = await UpgradeRequest.findByIdAndUpdate(requestId, { status }, { new: true });
+    }
+
     if (!updatedRequest) {
       return res.status(404).json({ error: "Request not found" });
     }
+
     res.status(200).json({ message: "Request status updated successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to update request status" });
   }
 };
 
-
-const deleteUser = async (req, res) =>{
-  try{
+const deleteUser = async (req, res) => {
+  try {
     const id = req.params.id;
-    deletedUser = User.findByIdAndDelete(id);
-    if(!deletedUser){
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
       return res.status(404).json({ error: "User not found" });
     }
-    return res.status(200).json({ error: "User successfully deleted" });
-  }
-  catch(error){
+    return res.status(200).json({ message: "User successfully deleted" });
+  } catch (error) {
     res.status(500).json({ error: "Failed to delete user" });
   }
-}
-
+};
 
 module.exports = {
   getDashboardStats,

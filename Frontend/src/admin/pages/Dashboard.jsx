@@ -5,7 +5,14 @@ import "../styles/Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({ userCount: 0, recipeCount: 0, pendingRequests: 0 });
+  const [stats, setStats] = useState({
+    userCount: 0,
+    recipeCount: 0,
+    pendingRequests: 0,
+    todayRecipes: 0,
+    todayUsers: 0,
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,27 +36,41 @@ const Dashboard = () => {
   return (
     <div className="admin-dashboard container">
       <h1 className="text-center my-4">Admin Dashboard</h1>
-      <div className="row justify-content-center">
+      <div className="dashboard-grid">
         <div
-          className="stat-card col-12 col-md-4 mb-4"
-          style={{ backgroundColor: "#ffa726", cursor: "pointer" }}
-          onClick={() => handleNavigation("../admin/recipes")}
+          className="stat-card span-2-rows"
+          style={{ backgroundColor: "#ff5722" }}
+          onClick={() => handleNavigation("/admin/recipes")}
         >
           <h3>Recipes</h3>
           <p>{stats.recipeCount}</p>
         </div>
         <div
-          className="stat-card col-12 col-md-4 mb-4"
-          style={{ backgroundColor: "#4caf50", cursor: "pointer" }}
-          onClick={() => handleNavigation("../admin/users")}
+          className="stat-card span-2-cols"
+          style={{ backgroundColor: "#4caf50" }}
+          onClick={() => handleNavigation("/admin/users")}
         >
           <h3>Users</h3>
           <p>{stats.userCount}</p>
         </div>
         <div
-          className="stat-card col-12 col-md-4 mb-4"
-          style={{ backgroundColor: "#29b6f6", cursor: "pointer" }}
-          onClick={() => handleNavigation("../admin/requests")}
+          className="stat-card small-card"
+          style={{ backgroundColor: "#ff9800" }}
+        >
+          <h3>Today's Recipes</h3>
+          <p>{stats.todayRecipes}</p>
+        </div>
+        <div
+          className="stat-card small-card"
+          style={{ backgroundColor: "#9c27b0" }}
+        >
+          <h3>Today's Users</h3>
+          <p>{stats.todayUsers}</p>
+        </div>
+        <div
+          className="stat-card span-2-cols"
+          style={{ backgroundColor: "#2196f3" }}
+          onClick={() => handleNavigation("/admin/requests")}
         >
           <h3>Pending Requests</h3>
           <p>{stats.pendingRequests}</p>

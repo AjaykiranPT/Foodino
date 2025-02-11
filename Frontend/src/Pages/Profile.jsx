@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../styles/profile.css'
+import "../styles/profile.css";
+import axios from "axios";
+import { FaEdit, FaSignOutAlt } from "react-icons/fa"; // Importing icons
+import { CiLogout } from "react-icons/ci";
+import Favorites from "./Favorites";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -13,27 +17,40 @@ const Profile = () => {
     age: "",
     role: "",
   });
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     if (!userId) {
-      navigate("/login"); // Redirect if not logged in
+      navigate("/login");
       return;
     }
-
     fetchUserProfile();
+    fetchUserFavorites();
   }, [userId]);
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/auth/profile/${userId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data);
-      } else {
-        console.error("Failed to fetch user profile");
+      const response = await axios.get(
+        `http://localhost:3000/auth/profile/${userId}`
+      );
+      if (response.status === 200) {
+        setUser(response.data);
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
+    }
+  };
+
+  const fetchUserFavorites = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/favorites/user/${userId}`
+      );
+      if (response.status === 200) {
+        setFavorites(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
     }
   };
 
@@ -45,17 +62,28 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-      <h2>Profile</h2>
-      <div className="profile-details">
-        <p><strong>Name:</strong> {user.name}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Phone:</strong> {user.phonenumber}</p>
-        <p><strong>Age:</strong> {user.age}</p>
-        <p><strong>Role:</strong> {user.role}</p>
+      {/* Profile Section */}
+      <div className="profile-card">
+        <div className="profile-header">
+          <h2>Profile</h2>
+          <div className="profile-actions">
+            <FaEdit size={'1.5em'} className="icon edit-icon" onClick={() => navigate("/setting")} />
+
+            <CiLogout size={'1.5em'} color="red" className="icon logout-icon" onClick={handleLogout} />
+          </div>
+        </div>
+        <div className="profile-details">
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Phone:</strong> {user.phonenumber}</p>
+          <p><strong>Age:</strong> {user.age}</p>
+          <p><strong>Role:</strong> {user.role}</p>
+        </div>
       </div>
-      <div className="profile-actions">
-        <button onClick={() => navigate("/setting")}>Edit Profile</button>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
+
+      {/* Favorites Section */}
+      <div className="favorites-section">
+        <Favorites/>
       </div>
     </div>
   );

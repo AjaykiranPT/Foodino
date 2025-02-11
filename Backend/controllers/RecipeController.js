@@ -1,18 +1,20 @@
 const Recipe = require('../models/Recipe');
-const User = require('../models/User');
 
 // Create a new recipe
 const createRecipe = async (req, res) => {
   try {
     const { title, description, category, prepTime, ingredients, instructions, createdBy } = req.body;
 
-    // Basic validation
     if (!title || !description || !category || !prepTime || !ingredients || !instructions || !createdBy) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
 
-    // Handle image upload
+    if (isNaN(prepTime) || prepTime <= 0) {
+      return res.status(400).json({ message: 'Preparation time must be a positive number.' });
+    }
+
     const imageUrl = req.file?.path || null;
+    
     const recipe = new Recipe({
       title,
       description,
@@ -35,52 +37,45 @@ const createRecipe = async (req, res) => {
 // Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find().populate('createdBy', 'name role');
+    const recipes = await Recipe.find().populate('createdBy', 'name role').lean();
     res.status(200).json(recipes);
   } catch (error) {
-    console.error("Error retrieving recipes:", error);
-    res.status(500).json({ message: "Failed to retrieve recipes.", error: error.message });
+    console.error('Error retrieving recipes:', error);
+    res.status(500).json({ message: 'Failed to retrieve recipes.', error: error.message });
   }
 };
 
 // Get a recipe by ID
 const getRecipeById = async (req, res) => {
-  const { id } = req.params;
-  console.log(id)
   try {
-    const recipe = await Recipe.findById(id).populate('createdBy', 'name role');
+    const recipe = await Recipe.findById(req.params.id).populate('createdBy', 'name role').lean();
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found.' });
     }
     res.status(200).json(recipe);
   } catch (error) {
-    console.error("Error retrieving recipe:", error);
-    res.status(500).json({ message: "Failed to retrieve recipe.", error: error.message });
+    console.error('Error retrieving recipe:', error);
+    res.status(500).json({ message: 'Failed to retrieve recipe.', error: error.message });
   }
 };
 
 // Update a recipe
 const updateRecipe = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const recipe = await Recipe.findById(id);
+    const recipe = await Recipe.findById(req.params.id);
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found.' });
     }
 
     const { title, description, category, prepTime, ingredients, instructions } = req.body;
 
-    // Update recipe fields
     recipe.title = title || recipe.title;
     recipe.description = description || recipe.description;
     recipe.category = category || recipe.category;
-    recipe.prepTime = prepTime || recipe.prepTime;
+    recipe.prepTime = prepTime && !isNaN(prepTime) ? prepTime : recipe.prepTime;
     recipe.ingredients = ingredients ? JSON.parse(ingredients) : recipe.ingredients;
     recipe.instructions = instructions ? JSON.parse(instructions) : recipe.instructions;
-    if (req.file) {
-      recipe.image = req.file.path; // Update image if provided
-    }
+    recipe.image = req.file ? req.file.path : recipe.image;
 
     await recipe.save();
     res.status(200).json({ message: 'Recipe updated successfully!', recipe });
@@ -92,10 +87,8 @@ const updateRecipe = async (req, res) => {
 
 // Delete a recipe
 const deleteRecipe = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const recipe = await Recipe.findByIdAndDelete(id);
+    const recipe = await Recipe.findByIdAndDelete(req.params.id);
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found.' });
     }
@@ -106,10 +99,4 @@ const deleteRecipe = async (req, res) => {
   }
 };
 
-module.exports = {
-  createRecipe,
-  getAllRecipes,
-  getRecipeById,
-  updateRecipe,
-  deleteRecipe,
-};
+module.exports = { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe };

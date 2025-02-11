@@ -2,23 +2,27 @@ const cloudinary = require('../config/cloudinary');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 
-// Set up multer storage
+// Configure multer storage with Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'recipes', // Optional: specify folder in Cloudinary
-    allowedFormats: ['jpg', 'png', 'jpeg'], // Optional: specify allowed formats
-  },
+  params: async (req, file) => ({
+    folder: 'recipes',
+    format: file.mimetype.split('/')[1], // Get format dynamically
+    public_id: `${Date.now()}-${file.originalname}`,
+  }),
 });
 
-// Create multer upload middleware
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 const uploadImage = (req, res) => {
-  if (req.file) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image upload failed. No file received.' });
+    }
     res.status(200).json({ url: req.file.path });
-  } else {
-    res.status(400).json({ message: 'Image upload failed' });
+  } catch (error) {
+    console.error('Error in image upload:', error);
+    res.status(500).json({ message: 'Image upload error.', error: error.message });
   }
 };
 
