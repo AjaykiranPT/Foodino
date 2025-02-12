@@ -1,6 +1,6 @@
 .admin-sidebar {
     width: 20%;
-    background-color: rgb(45, 45, 45);
+    background: linear-gradient(to bottom, rgb(50, 50, 50), rgb(30, 30, 30)); 
     color: white;
     height: 90%;
     display: flex;
@@ -10,13 +10,26 @@
     border-radius: 40px;
     transition: background-color 0.3s ease;
     min-width: 200px;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* "One Mode" Shade */
+.sidebar-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05); /* Subtle white overlay */
+    border-radius: 40px;
+    pointer-events: none; /* Doesn't interfere with clicks */
 }
 
 .sidebar-title {
     text-align: center;
     color: white;
     font-weight: bold;
-
 }
 
 .sidebar-menu {
@@ -27,13 +40,43 @@
     font-size: 1rem;
     font-weight: bold;
     color: white;
-    
 }
 
 .MuiListItem-root:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
     color: #ffd180;
-    border-radius: 100px;
+    border-radius: 12px;
+}
+
+/* Sidebar Icons */
+.sidebar-icon {
+    margin-right: 10px;
+    color: #ffd180;
+}
+
+/* Sidebar link styles */
+.sidebar-menu .MuiListItem-root {
+    margin: 10px 0;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-menu .MuiListItem-root:hover {
+    background-color: rgb(74, 74, 74);
+}
+
+/* Active Link */
+.active-link {
+    background-color: rgba(255, 255, 255, 0.2); 
+    color: #ffffff !important;
+    font-weight: bold;
+    box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.active-link .MuiListItemText-root {
+    color: #ffffff !important;
 }
 
 .logout-section {
@@ -41,36 +84,19 @@
     margin-top: auto;
 }
 
+/* Logout Button */
 .logout-btn {
     font-size: 16px;
     font-weight: bold;
     border-radius: 20px;
     padding: 10px 20px;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logout-btn:hover {
     transform: scale(1.05);
-}
-
-/* Sidebar link styles */
-.sidebar-menu .MuiListItem-root {
-    margin: 10px 0;
-    border-radius: 8px;
-}
-
-.sidebar-menu .MuiListItem-root:hover {
-    
-    background-color: rgb(74, 74, 74); ;
-}
-
-.active-link {
-    background-color: rgba(255, 255, 255, 0.2); 
-    color: #ffffff !important;
-    font-weight: bold;
-    box-shadow: inset -1px 1px 1px #000000;
-}
-
-.active-link .MuiListItemText-root {
-    color: #000000 !important;
+    background-color: #c62828 !important;
 }

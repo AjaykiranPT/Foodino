@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button, List, ListItem, ListItemText, Divider, Typography } from "@mui/material";
+import { Logout, Dashboard, Restaurant, People, Assignment } from "@mui/icons-material";
 import "../styles/Sidebar.css";
 
 const Sidebar = () => {
@@ -18,6 +19,7 @@ const Sidebar = () => {
 
   return (
     <div className="admin-sidebar">
+      <div className="sidebar-shade"></div> {/* One Mode Shade Div */}
       <div className="sidebar-header">
         <Typography variant="h4" component="h2" className="sidebar-title">
           WELCOME
@@ -31,6 +33,7 @@ const Sidebar = () => {
           to="/admin/dashboard"
           className={isActive("/admin/dashboard") ? "active-link" : ""}
         >
+          <Dashboard className="sidebar-icon" />
           <ListItemText primary="Dashboard" />
         </ListItem>
         <ListItem
@@ -39,6 +42,7 @@ const Sidebar = () => {
           to="/admin/recipes"
           className={isActive("/admin/recipes") ? "active-link" : ""}
         >
+          <Restaurant className="sidebar-icon" />
           <ListItemText primary="Manage Recipes" />
         </ListItem>
         <ListItem
@@ -47,6 +51,7 @@ const Sidebar = () => {
           to="/admin/users"
           className={isActive("/admin/users") ? "active-link" : ""}
         >
+          <People className="sidebar-icon" />
           <ListItemText primary="Manage Users" />
         </ListItem>
         <ListItem
@@ -55,6 +60,7 @@ const Sidebar = () => {
           to="/admin/request"
           className={isActive("/admin/request") ? "active-link" : ""}
         >
+          <Assignment className="sidebar-icon" />
           <ListItemText primary="Requests" />
         </ListItem>
       </List>
@@ -65,6 +71,7 @@ const Sidebar = () => {
           onClick={handleLogout}
           className="logout-btn"
           size="large"
+          startIcon={<Logout />} // Added Logout Icon
         >
           Logout
         </Button>

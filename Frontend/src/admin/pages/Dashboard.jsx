@@ -70,7 +70,7 @@ const Dashboard = () => {
         <div
           className="stat-card span-2-cols"
           style={{ backgroundColor: "#2196f3" }}
-          onClick={() => handleNavigation("/admin/requests")}
+          onClick={() => handleNavigation("/admin/request")}
         >
           <h3>Pending Requests</h3>
           <p>{stats.pendingRequests}</p>
