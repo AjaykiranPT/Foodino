@@ -5,7 +5,7 @@
 .recipe-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Space between cards */
+  gap: 20px;
 }
 
 .recipe-card {
@@ -13,29 +13,43 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  flex: 1 1 calc(33% - 20px); /* Three cards per row, adjust as needed */
-  max-width: calc(33% - 20px); /* Ensures cards don’t exceed the width */
+  flex: 1 1 calc(33% - 20px);
+  max-width: calc(33% - 20px);
   display: flex;
   flex-direction: column;
 }
 
 .recipe-image {
   width: 100%;
-  height: 200px; /* Fixed height for images */
-  object-fit: cover; /* Ensures images maintain aspect ratio */
+  height: 200px;
+  object-fit: cover;
 }
 
 .recipe-details {
   padding: 10px;
 }
 
-.loading {
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.loading,
+.error {
   text-align: center;
   font-size: 18px;
+  margin-top: 20px;
 }
 
 .error {
-  text-align: center;
   color: red;
-  font-size: 18px;
+}
+
+.recipe-popup-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }

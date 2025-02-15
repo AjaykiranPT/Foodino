@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
-import '../styles/broadcast.css'
+import "../styles/broadcast.css";
 
 const socket = io("http://localhost:3000");
 
@@ -9,6 +9,9 @@ const Broadcast = () => {
   const [content, setContent] = useState("");
   const [mediaFile, setMediaFile] = useState(null);
   const [userId, setUserId] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null); // Reference to file input
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -21,9 +24,13 @@ const Broadcast = () => {
     e.preventDefault();
 
     if (!userId) {
+      setStatus("Error: User ID not found.");
       console.error("User ID not found.");
       return;
     }
+
+    setLoading(true);
+    setStatus("Uploading...");
 
     const formData = new FormData();
     formData.append("content", content);
@@ -43,15 +50,19 @@ const Broadcast = () => {
       if (response.status === 201) {
         setContent("");
         setMediaFile(null);
-        console.log("Broadcast sent successfully:", response.data);
-
+        if (fileInputRef.current) fileInputRef.current.value = ""; // Clear file input
+        setStatus("Uploaded successfully! ✅");
         socket.emit("new-broadcast", response.data.broadcast);
       } else {
-        console.error("Failed to send broadcast:", response.data.error);
+        setStatus("Failed to send broadcast ❌");
       }
     } catch (error) {
+      setStatus("Error sending broadcast ❌");
       console.error("Error sending broadcast:", error);
     }
+
+    setLoading(false);
+    setTimeout(() => setStatus(""), 3000);
   };
 
   return (
@@ -64,9 +75,20 @@ const Broadcast = () => {
           placeholder="Write your broadcast..."
           required
         />
-        <input type="file" onChange={(e) => setMediaFile(e.target.files[0])} />
-        <button type="submit">Send Broadcast</button>
+        <input
+          type="file"
+          ref={fileInputRef} // Reference for clearing input
+          onChange={(e) => setMediaFile(e.target.files[0])}
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? (
+            <span className="loading-spinner"></span>
+          ) : (
+            "Send Broadcast"
+          )}
+        </button>
       </form>
+      {status && <p className="upload-status">{status}</p>}
     </div>
   );
 };

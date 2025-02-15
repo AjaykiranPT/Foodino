@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button } from "@mui/material";
 import "../styles/ManageRecipe.css";
-import { Button } from "@mui/material"; // Import Material-UI Button
 
 const ManageRecipe = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -50,8 +52,17 @@ const ManageRecipe = () => {
       <h2>Manage Recipes</h2>
       <div className="recipe-list">
         {recipes.map((recipe) => (
-          <div key={recipe._id} className="recipe-card">
-            <img src={recipe.image} alt={recipe.title} className="recipe-image" />
+          <div
+            key={recipe._id}
+            className="recipe-card"
+            onClick={() => navigate(`/recipe/${recipe._id}`)}
+            style={{ cursor: "pointer" }}
+          >
+            <img
+              src={recipe.image || "https://via.placeholder.com/200"}
+              alt={recipe.title}
+              className="recipe-image"
+            />
             <div className="recipe-details">
               <h3>{recipe.title}</h3>
               <p>Category: {recipe.category}</p>
@@ -59,7 +70,10 @@ const ManageRecipe = () => {
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleDelete(recipe._id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(recipe._id);
+                }}
               >
                 Delete
               </Button>

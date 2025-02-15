@@ -1,0 +1,42 @@
+.register-container {
+    width: 10 %;
+    max-width: 400px;
+    background-color: #ffffff5e;
+    z-index: 100;
+    border-radius: 30px;
+  }
+  
+  .register-icon {
+    background-color: #ff3c00;
+    color: white;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .register-icon .icon {
+    font-size: 24px;
+  }
+  
+  .register-link {
+    color: #000000;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .registerbtn {
+    background-color: #ff3c00;
+  }
+  
+  .registerbtn:hover {
+    background-color: #ee6300;
+  }
+  
+  .input-field {
+    background: transparent !important;
+    border-radius: 10px;
+  }
+  

@@ -3,195 +3,142 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Container,
-  IconButton,
-  Alert,
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { FaArrowLeft, FaUserPlus } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const CustomTextField = ({ id, label, type = 'text', validation, errors, register }) => (
-  <TextField
-    id={id}
-    label={label}
-    type={type}
-    variant="outlined"
-    fullWidth
-    margin="normal"
-    {...register(id, validation)}
-    error={!!errors[id]}
-    helperText={errors[id]?.message}
-  />
-);
+import '../styles/registration.css';
 
 const Registration = () => {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
-  const [backendError, setBackendError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      setBackendError('');
       setLoading(true);
-      const response = await axios.post('http://localhost:3000/auth/register', { ...data, role: 'foodie' }, {
+      await axios.post('http://localhost:3000/auth/register', { ...data, role: 'foodie' }, {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      toast.success(response.data.message);
-      navigate('/login');
+      toast.success('Registration successful', { autoClose: 2000 });
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
       setLoading(false);
-      if (error.response) {
-        setBackendError(error.response.data.error || 'An error occurred');
-      } else {
-        console.error('Error:', error);
-        toast.error('Error: Unable to connect to the server.');
-      }
+      toast.error(error.response?.data?.error || 'Registration failed. Please try again.');
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: 'white',
-          width: '100%',
-          maxWidth: 400,
-        }}
-      >
-        <Box display="flex" justifyContent="flex-start" mb={2}>
-          <IconButton color="primary" onClick={() => navigate(-1)}>
-            <ArrowBackIcon />
-          </IconButton>
-        </Box>
+    <>
+      <div className="registration-container p-4 shadow border">
+        <div className="d-flex justify-content-start mb-2">
+          <button className="btn btn-link" onClick={() => navigate(-1)}>
+            <FaArrowLeft color='red' />
+          </button>
+        </div>
 
-        <Typography variant="h4" textAlign="center" mb={4} fontWeight="bold">
-          REGISTER
-        </Typography>
+        <div className="d-flex justify-content-center mb-3">
+          <div className="registration-icon">
+            <FaUserPlus className="icon" />
+          </div>
+        </div>
 
-        {backendError && <Alert severity="error" sx={{ mb: 2 }}>{backendError}</Alert>}
+        <h4 className="text-center mb-4">REGISTER</h4>
 
-        <CustomTextField
-          id="name"  // Changed from "username" to "name"
-          label="Name"
-          validation={{ required: 'Name is required' }}
-          errors={errors}
-          register={register}
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-3">
+            <input
+              type="text"
+              className={`input-field form-control ${errors.name ? 'is-invalid' : ''}`}
+              placeholder="Name"
+              {...register('name', { required: "Please enter your name" })}
+            />
+            <div className="invalid-feedback">{errors.name?.message}</div>
+          </div>
 
-        <CustomTextField
-          id="email"
-          label="Email"
-          validation={{
-            required: 'Email is required',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Enter a valid email address',
-            },
-          }}
-          errors={errors}
-          register={register}
-        />
+          <div className="mb-3">
+            <input
+              type="email"
+              className={`input-field form-control ${errors.email ? 'is-invalid' : ''}`}
+              placeholder="Email"
+              {...register('email', { required: "Please enter your email" })}
+            />
+            <div className="invalid-feedback">{errors.email?.message}</div>
+          </div>
 
-        <CustomTextField
-          id="phonenumber"
-          label="Phone Number"
-          type="tel"
-          validation={{
-            required: 'Phone number is required',
-            pattern: {
-              value: /^[0-9]{10}$/,
-              message: 'Enter a valid 10-digit phone number',
-            },
-          }}
-          errors={errors}
-          register={register}
-        />
+          <div className="mb-3">
+            <input
+              type="tel"
+              className={`input-field form-control ${errors.phonenumber ? 'is-invalid' : ''}`}
+              placeholder="Phone Number"
+              {...register('phonenumber', {
+                required: "Please enter your phone number",
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: "Enter a valid 10-digit phone number",
+                },
+              })}
+            />
+            <div className="invalid-feedback">{errors.phonenumber?.message}</div>
+          </div>
 
-        <CustomTextField
-          id="age"
-          label="Age"
-          type="number"
-          validation={{
-            required: 'Age is required',
-            min: { value: 18, message: 'You must be at least 18 years old' },
-          }}
-          errors={errors}
-          register={register}
-        />
+          <div className="mb-3">
+            <input
+              type="number"
+              className={`input-field form-control ${errors.age ? 'is-invalid' : ''}`}
+              placeholder="Age"
+              {...register('age', {
+                required: "Please enter your age",
+                min: { value: 18, message: "You must be at least 18 years old" },
+              })}
+            />
+            <div className="invalid-feedback">{errors.age?.message}</div>
+          </div>
 
-        <CustomTextField
-          id="password"
-          label="Password"
-          type="password"
-          validation={{
-            required: 'Password is required',
-            minLength: {
-              value: 6,
-              message: 'Password must be at least 6 characters',
-            },
-            pattern: {
-              value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
-              message: 'Password must include at least one letter and one number',
-            },
-          }}
-          errors={errors}
-          register={register}
-        />
+          <div className="mb-3">
+            <input
+              type="password"
+              className={`input-field form-control ${errors.password ? 'is-invalid' : ''}`}
+              placeholder="Password"
+              {...register('password', {
+                required: "Please enter a password",
+                minLength: { value: 6, message: "Password must be at least 6 characters" },
+                pattern: {
+                  value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
+                  message: "Password must include at least one letter and one number",
+                },
+              })}
+            />
+            <div className="invalid-feedback">{errors.password?.message}</div>
+          </div>
 
-        <CustomTextField
-          id="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          validation={{
-            required: 'Confirm your password',
-            validate: (value) => value === watch('password') || 'Passwords do not match',
-          }}
-          errors={errors}
-          register={register}
-        />
+          <div className="mb-3">
+            <input
+              type="password"
+              className={`input-field form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+              placeholder="Confirm Password"
+              {...register('confirmPassword', {
+                required: "Confirm your password",
+                validate: (value) => value === watch('password') || "Passwords do not match",
+              })}
+            />
+            <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
+          </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 3, mb: 2 }}
-          disabled={loading}
-        >
-          {loading ? 'REGISTERING...' : 'REGISTER'}
-        </Button>
+          <button type="submit" className="register-btn btn w-100 mt-3 mb-2" disabled={loading}>
+            {loading ? 'REGISTERING...' : 'REGISTER'}
+          </button>
 
-        <Typography textAlign="center" variant="body2" color="textSecondary">
-          Already have an account?{' '}
-          <Link to="/login" style={{ color: '#1976d2', textDecoration: 'none' }}>
-            Login here
-          </Link>
-        </Typography>
-      </Box>
-
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover draggable theme="light" />
-    </Container>
+          <p className="text-center">
+            Already have an account?{' '}
+            <Link to="/login" className="register-link">
+              Login here
+            </Link>
+          </p>
+        </form>
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 

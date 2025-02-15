@@ -5,8 +5,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import Home from './Pages/Home.jsx'
 import Explore from './Pages/Explore.jsx';
-import Login from './Pages/Login';
-import Register from './Pages/Registration';
+import Login from './Pages/Login.jsx';
+import Registration from './Pages/Registration.jsx';
 import Recipe from './Pages/Recipe';
 import Addrecipe from './Pages/Addrecipe';
 import Setting from './Pages/Setting.jsx';
@@ -15,11 +15,15 @@ import Favorites from './Pages/Favorites.jsx'
 
 import Layout from './Layouts/Layout.jsx';
 import AdminLayout from './Layouts/AdminLayout.jsx';
+import AccountLayout from './Layouts/AccountLayout.jsx';
 
 import Dashboard from './admin/pages/Dashboard.jsx';
 import ManageUser from './admin/pages/ManageUsers.jsx'
 import ManageRecipe from './admin/pages/ManageRecipes.jsx'
 import Request from './admin/pages/Request.jsx'
+import AdminSetting from './admin/pages/Settings.jsx'
+import AdminProfile from './admin/pages/Profile.jsx'
+
 
 import UserChat from './Pages/UserChat.jsx'
 import Broadcast from './Pages/Broadcast.jsx'
@@ -48,16 +52,21 @@ const App = () => {
           <Route path='/Broadcast' element={<Broadcast/>}/> 
         </Route>
         
-        <Route path="/" element={<Home />} />
+      <Route element={<AccountLayout/>}>
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Registration />} />
+      </Route>
+
+        <Route path="/" element={<Home />} />
+        
         
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<Dashboard/>}/>
           <Route path="/admin/users" element={<ManageUser/>}/>
           <Route path="/admin/recipes" element={<ManageRecipe/>}/>
           <Route path="/admin/request" element={<Request/>}/>
-          <Route path="/admin/setting" element={<Dashboard/>}/>
+          <Route path="/admin/settings" element={<AdminSetting/>}/>
+          <Route path="/admin/account" element={<AdminProfile/>}/>
         </Route>
 
       </Routes>

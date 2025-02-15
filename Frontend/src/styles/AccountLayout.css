@@ -1,0 +1,60 @@
+.account-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9800, #ff5722); /* Vibrant Food Theme */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Stickers */
+  .sticker {
+    position: absolute;
+    width: 250px;
+    opacity: 0.9;
+    transition: transform 0.5s ease-in-out;
+    z-index: 0;
+  }
+  
+  .sticker1 {
+    top: 5%;
+    left: 25%;
+    animation: float 5s infinite ease-in-out;
+    
+  }
+  .sticker2 {
+    top: 40%;
+    right: 30%;
+    animation: float 6s infinite ease-in-out;
+  }
+  .sticker3 {
+    bottom: 0%;
+    right: 50%;
+    transform: rotate(-20deg);
+    animation: float 4s infinite ease-in-out;
+  }
+  
+  /* Floating Effect */
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  /* Frosted Glass Effect */
+  .auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    color: white;
+    text-align: center;
+  }
+  
+  outlet{
+    z-index: 100;
+  }

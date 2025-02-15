@@ -6,15 +6,11 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaArrowLeft, FaSignInAlt } from 'react-icons/fa';
-import '../styles/Login.css'
+import '../styles/login.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -51,28 +47,27 @@ const Login = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ height: '100vh', backgroundColor: '#F5F5F5' }}>
-      <div className="p-4 shadow border rounded" style={{ width: '100%', maxWidth: '400px', backgroundColor: '#FFFFFF' }}>
+    <>
+      <div className="login-container p-4 shadow border">
         <div className="d-flex justify-content-start mb-2">
           <button className="btn btn-link" onClick={() => navigate(-1)}>
-            <FaArrowLeft />
+            <FaArrowLeft color='red' />
           </button>
         </div>
 
         <div className="d-flex justify-content-center mb-3">
-          <div className="bg-success text-white rounded-circle d-flex justify-content-center align-items-center" style={{ width: '56px', height: '56px' }}>
-            <FaSignInAlt style={{ fontSize: '24px' }} />
+          <div className="login-icon">
+            <FaSignInAlt className="icon" />
           </div>
         </div>
 
-        <h4 className="text-center mb-4 font-weight-bold" style={{ color: '#333' }}>LOGIN</h4>
+        <h4 className="text-center mb-4">LOGIN</h4>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <input
               type="email"
-              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-              id="email"
+              className={`input-field form-control ${errors.email ? 'is-invalid' : ''}`}
               placeholder="Email"
               {...register('email', { required: "Please enter your email" })}
             />
@@ -82,29 +77,27 @@ const Login = () => {
           <div className="mb-3">
             <input
               type="password"
-              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-              id="password"
+              className={`input-field form-control ${errors.password ? 'is-invalid' : ''}`}
               placeholder="Password"
               {...register('password', { required: "Please enter your password" })}
             />
             <div className="invalid-feedback">{errors.password?.message}</div>
           </div>
 
-          <button type="submit" className="btn btn-success w-100 mt-3 mb-2">
+          <button type="submit" className="loginbtn btn w-100 mt-3 mb-2">
             LOGIN
           </button>
 
           <p className="text-center">
             Don't have an account?{' '}
-            <Link to="/register" style={{ color: '#FF9800', textDecoration: 'none', fontWeight: 'bold' }}>
+            <Link to="/register" className="register-link">
               Register here
             </Link>
           </p>
         </form>
       </div>
-
       <ToastContainer />
-    </div>
+    </>
   );
 };
 
