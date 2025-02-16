@@ -1,20 +1,21 @@
 const Recipe = require('../models/Recipe');
-
+const cloudinary = require('../config/cloudinary.js')
 // Create a new recipe
 const createRecipe = async (req, res) => {
   try {
     const { title, description, category, prepTime, ingredients, instructions, createdBy } = req.body;
 
-    if (!title || !description || !category || !prepTime || !ingredients || !instructions || !createdBy) {
-      return res.status(400).json({ message: 'All fields are required.' });
+    if (!req.files || !req.files.image) {
+      return res.status(400).json({ message: 'Image is required.' });
     }
 
-    if (isNaN(prepTime) || prepTime <= 0) {
-      return res.status(400).json({ message: 'Preparation time must be a positive number.' });
-    }
+    // Upload image to Cloudinary
+    const file = req.files.image;
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: 'recipes',
+      resource_type: 'auto'
+    });
 
-    const imageUrl = req.file?.path || null;
-    
     const recipe = new Recipe({
       title,
       description,
@@ -23,7 +24,7 @@ const createRecipe = async (req, res) => {
       ingredients: JSON.parse(ingredients),
       instructions: JSON.parse(instructions),
       createdBy,
-      image: imageUrl,
+      image: result.secure_url
     });
 
     await recipe.save();

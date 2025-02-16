@@ -57,7 +57,7 @@ const Profile = () => {
   const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userRole");
-    navigate("/login");
+    navigate("/explore");
   };
 
   return (

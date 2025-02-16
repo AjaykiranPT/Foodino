@@ -53,8 +53,9 @@ const AddRecipe = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (!title || !description || !category || !prepTime || !image) {
+    if (!title.trim() || !description.trim() || !category || !prepTime || !image) {
       setError('All fields are required!');
+      setTimeout(() => setError(''), 3000);
       return;
     }
   
@@ -67,35 +68,35 @@ const AddRecipe = () => {
   
       const formData = new FormData();
       formData.append('image', image);
-      formData.append('title', title);
-      formData.append('description', description);
+      formData.append('title', title.trim());
+      formData.append('description', description.trim());
       formData.append('category', category);
       formData.append('prepTime', prepTime);
-      formData.append('ingredients', JSON.stringify(ingredients));
-      formData.append('instructions', JSON.stringify(instructions));
+      // Convert arrays to strings before appending
+      formData.append('ingredients', JSON.stringify(ingredients.filter(i => i.trim())));
+      formData.append('instructions', JSON.stringify(instructions.filter(i => i.trim())));
       formData.append('createdBy', userId);
-  
-      // Debugging: Log formData values
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
   
       const response = await axios.post('http://localhost:3000/recipes/add', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data'
         },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
       });
   
-      if (response.status === 200) {
+      if (response.status === 201) {
         setSuccess(true);
         setError('');
-        navigate('/');
+        setTimeout(() => navigate('/explore'), 2000);
       }
     } catch (err) {
       console.error('Error adding recipe:', err);
       setError('Failed to add recipe. Please try again.');
+      setTimeout(() => setError(''), 3000);
     }
   };
+  
   
   
 

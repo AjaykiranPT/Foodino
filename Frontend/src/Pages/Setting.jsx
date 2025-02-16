@@ -79,17 +79,18 @@ const Settings = () => {
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("proofFile", image);
-
+  
       try {
         const response = await axios.post("http://localhost:3000/auth/submit", formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data"
           },
+          maxContentLength: Infinity,
+          maxBodyLength: Infinity
         });
-
+  
         if (response.status === 201) {
           alert("Upgrade request submitted successfully!");
-          // Reset states
           setImage(null);
           setShowConfirm(false);
         } else {
@@ -97,7 +98,7 @@ const Settings = () => {
         }
       } catch (error) {
         console.error("Error submitting upgrade request:", error);
-        alert("An error occurred while submitting your upgrade request.");
+        alert(error.response?.data?.message || "An error occurred while submitting your upgrade request.");
       }
     } else {
       alert("Please upload an image for verification.");

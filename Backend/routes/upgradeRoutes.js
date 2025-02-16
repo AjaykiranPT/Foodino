@@ -1,5 +1,4 @@
 const express = require("express");
-const multer = require("multer");
 const {
   submitUpgradeRequest,
   getAllUpgradeRequests,
@@ -7,10 +6,9 @@ const {
 } = require("../controllers/upgradeController");
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/" }); // Temp storage for proof file
 
 // User: Submit an upgrade request
-router.post("/submit", upload.single("proofFile"), submitUpgradeRequest);
+router.post("/submit", submitUpgradeRequest);
 
 // Admin: Get all requests
 router.get("/requests", getAllUpgradeRequests);
